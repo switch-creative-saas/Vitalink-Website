@@ -63,31 +63,38 @@ interface BlogPostSingle {
 async function fetchContentful<T>(
   query: string,
   preview = false
-): Promise<T> {
+): Promise<T | null> {
   const url = `${CONTENTFUL_GRAPHQL_URL}/${spaceId}`;
   const token = preview ? (previewToken || accessToken) : accessToken;
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ query }),
-    next: { revalidate: 3600 }, // ISR: Revalidate every hour
-  });
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query }),
+      next: { revalidate: 3600 }, // ISR: Revalidate every hour
+    });
 
-  if (!response.ok) {
-    throw new Error(`Contentful API error: ${response.statusText}`);
+    if (!response.ok) {
+      console.error(`Contentful API error: ${response.status} ${response.statusText}`);
+      return null;
+    }
+
+    const result: ContentfulResponse<T> = await response.json();
+
+    if (result.errors) {
+      console.error(`GraphQL errors: ${result.errors.map((e) => e.message).join(", ")}`);
+      return null;
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching from Contentful:", error);
+    return null;
   }
-
-  const result: ContentfulResponse<T> = await response.json();
-
-  if (result.errors) {
-    throw new Error(`GraphQL errors: ${result.errors.map((e) => e.message).join(", ")}`);
-  }
-
-  return result.data;
 }
 
 const ALL_POSTS_QUERY = `
@@ -384,7 +391,7 @@ export async function getAllPosts(preview = false): Promise<BlogPost[]> {
     ALL_POSTS_QUERY,
     preview
   );
-  return data.blogPostCollection.items;
+  return data?.blogPostCollection.items || [];
 }
 
 export async function getFeaturedPosts(preview = false): Promise<BlogPost[]> {
@@ -392,7 +399,7 @@ export async function getFeaturedPosts(preview = false): Promise<BlogPost[]> {
     FEATURED_POST_QUERY,
     preview
   );
-  return data.blogPostCollection.items;
+  return data?.blogPostCollection.items || [];
 }
 
 export async function getPostBySlug(slug: string, preview = false): Promise<BlogPost | null> {
@@ -400,7 +407,7 @@ export async function getPostBySlug(slug: string, preview = false): Promise<Blog
     POST_BY_SLUG_QUERY,
     preview
   );
-  return data.blogPostCollection.items[0] || null;
+  return data?.blogPostCollection.items[0] || null;
 }
 
 export async function getPostsByCategory(category: string, preview = false): Promise<BlogPost[]> {
@@ -408,7 +415,7 @@ export async function getPostsByCategory(category: string, preview = false): Pro
     POSTS_BY_CATEGORY_QUERY,
     preview
   );
-  return data.blogPostCollection.items;
+  return data?.blogPostCollection.items || [];
 }
 
 export async function getPostsByTag(tag: string, preview = false): Promise<BlogPost[]> {
@@ -416,7 +423,7 @@ export async function getPostsByTag(tag: string, preview = false): Promise<BlogP
     POSTS_BY_TAG_QUERY,
     preview
   );
-  return data.blogPostCollection.items;
+  return data?.blogPostCollection.items || [];
 }
 
 export async function searchPosts(query: string, preview = false): Promise<BlogPost[]> {
@@ -424,7 +431,7 @@ export async function searchPosts(query: string, preview = false): Promise<BlogP
     SEARCH_QUERY,
     preview
   );
-  return data.blogPostCollection.items;
+  return data?.blogPostCollection.items || [];
 }
 
 export async function getAllCategories(preview = false): Promise<string[]> {
@@ -432,6 +439,7 @@ export async function getAllCategories(preview = false): Promise<string[]> {
     CATEGORIES_QUERY,
     preview
   );
+  if (!data) return [];
   const categories = new Set(data.blogPostCollection.items.map((item) => item.category));
   return Array.from(categories);
 }
@@ -441,6 +449,7 @@ export async function getAllTags(preview = false): Promise<string[]> {
     TAGS_QUERY,
     preview
   );
+  if (!data) return [];
   const tags = new Set(data.blogPostCollection.items.flatMap((item) => item.tags));
   return Array.from(tags);
 }
@@ -450,5 +459,5 @@ export async function getPopularPosts(preview = false, limit = 5): Promise<BlogP
     POPULAR_POSTS_QUERY,
     preview
   );
-  return data.blogPostCollection.items;
+  return data?.blogPostCollection.items || [];
 }
