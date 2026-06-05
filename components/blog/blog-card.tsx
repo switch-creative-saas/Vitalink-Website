@@ -12,11 +12,11 @@ interface BlogCardProps {
 }
 
 export function BlogCard({ post, featured = false }: BlogCardProps) {
-  const imageUrl = post.fields.featuredImage?.fields.file?.url
-    ? `https:${post.fields.featuredImage.fields.file.url}`
+  const imageUrl = post.featuredImage?.url
+    ? `https:${post.featuredImage.url}`
     : "/placeholder.jpg";
 
-  const date = new Date(post.fields.publishedDate).toLocaleDateString("en-US", {
+  const date = new Date(post.publishedDate).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -24,19 +24,19 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
 
   return (
     <article className={`group ${featured ? "col-span-full" : ""}`}>
-      <Link href={`/blog/${post.fields.slug}`} className="block">
+      <Link href={`/blog/${post.slug}`} className="block">
         <div className="relative overflow-hidden rounded-xl bg-white border border-border shadow-sm hover:shadow-md transition-shadow">
           <div className={`relative ${featured ? "aspect-[21/9]" : "aspect-[16/9]"} overflow-hidden`}>
             <Image
               src={imageUrl}
-              alt={post.fields.featuredImage?.fields.title || post.fields.title}
+              alt={post.featuredImage?.title || post.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
             <div className="absolute top-4 left-4">
               <span className="inline-block px-3 py-1 bg-[#2563EB] text-white text-xs font-semibold rounded-full">
-                {post.fields.category}
+                {post.category}
               </span>
             </div>
           </div>
@@ -44,23 +44,23 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
               <div className="flex items-center gap-1">
                 <User className="w-4 h-4" />
-                <span>{post.fields.author}</span>
+                <span>{post.author}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
                 <span>{date}</span>
               </div>
-              {post.fields.readingTime && (
+              {post.readingTime && (
                 <div className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
-                  <span>{post.fields.readingTime} min read</span>
+                  <span>{post.readingTime} min read</span>
                 </div>
               )}
             </div>
             <h2 className={`font-bold text-foreground mb-2 line-clamp-2 ${featured ? "text-2xl" : "text-lg"}`}>
-              {post.fields.title}
+              {post.title}
             </h2>
-            <p className="text-muted-foreground line-clamp-2 mb-4">{post.fields.excerpt}</p>
+            <p className="text-muted-foreground line-clamp-2 mb-4">{post.excerpt}</p>
             <div className="flex items-center gap-2 text-[#2563EB] font-medium group-hover:gap-3 transition-all">
               <span>Read more</span>
               <ArrowRight className="w-4 h-4" />
@@ -126,12 +126,12 @@ export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
         <ul className="space-y-4">
           {popularPosts.slice(0, 5).map((post) => (
             <li key={post.sys.id}>
-              <Link href={`/blog/${post.fields.slug}`} className="block group">
+              <Link href={`/blog/${post.slug}`} className="block group">
                 <h4 className="text-sm font-medium text-foreground group-hover:text-[#2563EB] transition-colors line-clamp-2">
-                  {post.fields.title}
+                  {post.title}
                 </h4>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {new Date(post.fields.publishedDate).toLocaleDateString("en-US", {
+                  {new Date(post.publishedDate).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                   })}

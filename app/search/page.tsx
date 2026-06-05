@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { BlogCard } from "@/components/blog/blog-card";
 import { SectionContainer } from "@/components/landing/section-container";
-import { searchBlogPosts } from "@/lib/contentful";
+import { searchPosts } from "@/lib/contentful";
 import { BlogPost } from "@/lib/contentful";
 
 export default function SearchPage() {
@@ -22,7 +22,7 @@ export default function SearchPage() {
 
     setLoading(true);
     try {
-      const searchResults = await searchBlogPosts(searchQuery);
+      const searchResults = await searchPosts(searchQuery);
       setResults(searchResults);
     } catch (error) {
       console.error("Search error:", error);

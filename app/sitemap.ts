@@ -1,10 +1,10 @@
-import { getAllBlogPosts, getAllCategories, getAllTags } from "@/lib/contentful";
+import { getAllPosts, getAllCategories, getAllTags } from "@/lib/contentful";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vitalink.africa";
 
 export default async function sitemap() {
   const [posts, categories, tags] = await Promise.all([
-    getAllBlogPosts(),
+    getAllPosts(),
     getAllCategories(),
     getAllTags(),
   ]);
@@ -31,7 +31,7 @@ export default async function sitemap() {
   ];
 
   const blogPages = posts.map((post) => ({
-    url: `${SITE_URL}/blog/${post.fields.slug}`,
+    url: `${SITE_URL}/blog/${post.slug}`,
     lastModified: new Date(post.sys.updatedAt),
     changeFrequency: "weekly" as const,
     priority: 0.8,

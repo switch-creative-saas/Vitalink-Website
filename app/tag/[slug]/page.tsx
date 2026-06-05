@@ -1,4 +1,4 @@
-import { getBlogPostsByTag, getAllTags } from "@/lib/contentful";
+import { getPostsByTag, getAllTags } from "@/lib/contentful";
 import { BlogCard } from "@/components/blog/blog-card";
 import { SectionContainer } from "@/components/landing/section-container";
 import { Metadata } from "next";
@@ -39,7 +39,7 @@ export default async function TagPage({ params }: TagPageProps) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-  const posts = await getBlogPostsByTag(tagName);
+  const posts = await getPostsByTag(tagName);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">

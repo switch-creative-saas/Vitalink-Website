@@ -1,4 +1,4 @@
-import { getAllBlogPosts, getFeaturedBlogPost, getAllCategories, getAllTags, getPopularPosts } from "@/lib/contentful";
+import { getAllPosts, getFeaturedPosts, getAllCategories, getAllTags, getPopularPosts } from "@/lib/contentful";
 import { BlogCard, Sidebar } from "@/components/blog/blog-card";
 import { SectionContainer } from "@/components/landing/section-container";
 import { Metadata } from "next";
@@ -17,14 +17,15 @@ export const metadata: Metadata = {
 export const revalidate = 3600; // Revalidate every hour
 
 export default async function BlogPage() {
-  const [allPosts, featuredPost, categories, tags, popularPosts] = await Promise.all([
-    getAllBlogPosts(),
-    getFeaturedBlogPost(),
+  const [allPosts, featuredPosts, categories, tags, popularPosts] = await Promise.all([
+    getAllPosts(),
+    getFeaturedPosts(),
     getAllCategories(),
     getAllTags(),
     getPopularPosts(),
   ]);
 
+  const featuredPost = featuredPosts[0] || null;
   const recentPosts = featuredPost
     ? allPosts.filter((post) => post.sys.id !== featuredPost.sys.id)
     : allPosts;

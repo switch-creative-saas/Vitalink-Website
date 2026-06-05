@@ -1,4 +1,4 @@
-import { getBlogPostsByCategory, getAllCategories } from "@/lib/contentful";
+import { getPostsByCategory, getAllCategories } from "@/lib/contentful";
 import { BlogCard } from "@/components/blog/blog-card";
 import { SectionContainer } from "@/components/landing/section-container";
 import { Metadata } from "next";
@@ -39,7 +39,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-  const posts = await getBlogPostsByCategory(categoryName);
+  const posts = await getPostsByCategory(categoryName);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
