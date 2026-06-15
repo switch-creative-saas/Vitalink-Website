@@ -1,7 +1,7 @@
 import React from "react"
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Instrument_Sans, JetBrains_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
+import { CookieConsent } from '@/components/CookieConsent'
 import './globals.css'
 
 const instrumentSans = Instrument_Sans({
@@ -21,10 +21,11 @@ export const metadata: Metadata = {
     icon: '/logo.png',
     apple: '/logo.png',
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({
@@ -36,7 +37,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${instrumentSans.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
         {children}
-        <Analytics />
+        <CookieConsent />
       </body>
     </html>
   )

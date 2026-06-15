@@ -88,9 +88,13 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #ffffff;
   }
   html {
     scroll-behavior: smooth;
+  }
+  [id] {
+    scroll-margin-top: 88px;
   }
 }
 

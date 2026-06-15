@@ -1,4 +1,4 @@
-import { getAllPosts, getAllCategories, getAllTags } from "@/lib/contentful";
+import { getAllCategories, getAllPosts, getAllTags, slugify } from "@/sanity/lib/blog";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vitalink.africa";
 
@@ -32,20 +32,20 @@ export default async function sitemap() {
 
   const blogPages = posts.map((post) => ({
     url: `${SITE_URL}/blog/${post.slug}`,
-    lastModified: new Date(post.sys.updatedAt),
+    lastModified: new Date(post._updatedAt),
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
 
   const categoryPages = categories.map((category) => ({
-    url: `${SITE_URL}/category/${category.toLowerCase().replace(/\s+/g, "-")}`,
+    url: `${SITE_URL}/category/${category.slug || slugify(category.title)}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
   const tagPages = tags.map((tag) => ({
-    url: `${SITE_URL}/tag/${tag.toLowerCase().replace(/\s+/g, "-")}`,
+    url: `${SITE_URL}/tag/${slugify(tag)}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.6,

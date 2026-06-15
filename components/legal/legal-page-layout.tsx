@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Download, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { GlobeBackground } from "@/components/GlobeBackground";
 import { SectionContainer } from "@/components/landing/section-container";
 import { cn } from "@/lib/utils";
 
@@ -61,12 +62,14 @@ export function LegalPageLayout({
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#2563EB] to-[#7C3AED] py-16">
+      <div className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-20">
+        <GlobeBackground />
         <SectionContainer>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+          <div className="relative z-10">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground">
             {title}
           </h1>
-          <p className="mt-4 text-white/80">
+          <p className="mt-4 text-muted-foreground">
             Last Updated: {lastUpdated}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
@@ -74,7 +77,7 @@ export function LegalPageLayout({
               variant="secondary"
               size="sm"
               onClick={handleExportPDF}
-              className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+              className="bg-white text-foreground hover:bg-[#F8FAFC] border-border"
             >
               <Download className="w-4 h-4 mr-2" />
               Export PDF
@@ -83,11 +86,12 @@ export function LegalPageLayout({
               variant="secondary"
               size="sm"
               onClick={handlePrint}
-              className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+              className="bg-white text-foreground hover:bg-[#F8FAFC] border-border"
             >
               <Printer className="w-4 h-4 mr-2" />
               Print
             </Button>
+          </div>
           </div>
         </SectionContainer>
       </div>

@@ -1,90 +1,83 @@
-import { getPostsByCategory, getAllCategories } from "@/lib/contentful";
+import { getAllCategories, getPostsByCategory } from "@/sanity/lib/blog";
 import { BlogCard } from "@/components/blog/blog-card";
+import { FooterSection } from "@/components/landing/footer-section";
+import { Navigation } from "@/components/landing/navigation";
 import { SectionContainer } from "@/components/landing/section-container";
 import { Metadata } from "next";
 import Link from "next/link";
 
 interface CategoryPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {
   const categories = await getAllCategories();
   return categories.map((category) => ({
-    slug: category.toLowerCase().replace(/\s+/g, "-"),
+    slug: category.slug,
   }));
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const categoryName = params.slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+  const { slug } = await params;
+  const categories = await getAllCategories();
+  const category = categories.find((item) => item.slug === slug);
+  const title = category?.title || "Category";
 
   return {
-    title: `${categoryName} | VitaLink Insights`,
-    description: `Explore ${categoryName} articles on VitaLink Insights - healthcare innovation and public health intelligence.`,
-    openGraph: {
-      title: `${categoryName} | VitaLink Insights`,
-      description: `Explore ${categoryName} articles on VitaLink Insights - healthcare innovation and public health intelligence.`,
-    },
+    title: `${title} | VitaLink Insights`,
+    description:
+      category?.description ||
+      `Explore ${title} articles on VitaLink Insights - healthcare innovation and public health intelligence.`,
   };
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const categoryName = params.slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-
-  const posts = await getPostsByCategory(categoryName);
+  const { slug } = await params;
+  const categories = await getAllCategories();
+  const category = categories.find((item) => item.slug === slug);
+  const title = category?.title || slug.split("-").join(" ");
+  const posts = await getPostsByCategory(slug);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Category Header */}
-      <section className="bg-gradient-to-br from-[#2563EB] to-[#7C3AED] py-16">
+    <main className="relative min-h-screen overflow-x-hidden bg-white">
+      <Navigation />
+      <section className="bg-white pt-28 pb-14 lg:pt-36 lg:pb-20">
         <SectionContainer>
-          <div className="max-w-4xl mx-auto">
-            <Link href="/blog" className="inline-block mb-4">
-              <span className="text-white/80 hover:text-white text-sm">
-                ← Back to Blog
-              </span>
+          <div className="max-w-4xl">
+            <Link href="/blog" className="text-sm font-medium text-[#2563EB] hover:underline">
+              Back to Blog
             </Link>
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-              {categoryName}
+            <h1 className="mt-5 text-4xl font-bold capitalize text-foreground sm:text-5xl">
+              {title}
             </h1>
-            <p className="text-lg text-white/90">
-              Explore insights and articles about {categoryName.toLowerCase()}.
+            <p className="mt-4 text-lg text-muted-foreground">
+              {category?.description || `Explore insights and articles about ${title}.`}
             </p>
           </div>
         </SectionContainer>
       </section>
 
-      {/* Articles Grid */}
-      <SectionContainer className="py-12 lg:py-20">
-        <div className="max-w-4xl mx-auto">
-          {posts.length > 0 ? (
-            <div className="grid md:grid-cols-2 gap-6">
-              {posts.map((post) => (
-                <BlogCard key={post.sys.id} post={post} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">No articles found in this category.</p>
-              <Link href="/blog">
-                <button className="px-6 py-2 bg-[#2563EB] text-white rounded-lg hover:bg-[#2563EB]/90">
-                  Browse All Articles
-                </button>
-              </Link>
-            </div>
-          )}
-        </div>
+      <SectionContainer className="py-14 lg:py-20">
+        {posts.length > 0 ? (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => (
+              <BlogCard key={post._id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <div className="mx-auto max-w-2xl rounded-xl border border-border bg-white p-8 text-center shadow-sm">
+            <p className="mb-4 text-muted-foreground">No articles found in this category.</p>
+            <Link href="/blog" className="font-medium text-[#2563EB] hover:underline">
+              Browse all articles
+            </Link>
+          </div>
+        )}
       </SectionContainer>
-    </div>
+      <FooterSection />
+    </main>
   );
 }
 
-export const revalidate = 3600; // Revalidate every hour
+export const revalidate = 60;

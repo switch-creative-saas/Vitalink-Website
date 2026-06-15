@@ -2,6 +2,7 @@
 
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import TiltCards from "@/components/TiltCards";
 import { cn } from "@/lib/utils";
 import { SectionContainer } from "./section-container";
 
@@ -94,30 +95,10 @@ export function PricingSection() {
             </Button>
           </div>
 
-          {/* Phone mockup */}
+          {/* VitaCard card cluster */}
           <div className="flex justify-center min-w-0">
-            <div className="w-full max-w-[280px] rounded-[2rem] border-4 border-[#0F172A] bg-white shadow-premium-lg overflow-hidden">
-              <div className="h-6 bg-[#F8FAFC] flex justify-center items-center">
-                <div className="w-16 h-1 rounded-full bg-[#E2E8F0]" />
-              </div>
-              <div className="p-5 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#2563EB] to-[#7C3AED] shrink-0" />
-                  <div className="min-w-0">
-                    <p className="font-semibold text-foreground truncate">John Doe</p>
-                    <p className="text-xs text-muted-foreground">VitaCard Identity</p>
-                  </div>
-                </div>
-                <div className="rounded-xl bg-[#EFF6FF] border border-[#BFDBFE] p-4">
-                  <p className="text-xs font-semibold text-[#2563EB] mb-2">VitaLink</p>
-                  <p className="text-sm text-foreground">Blood Type: O+</p>
-                  <p className="text-sm text-muted-foreground mt-1">Allergies: Penicillin</p>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="h-10 rounded-lg bg-[#F8FAFC] border border-border" />
-                  <div className="h-10 rounded-lg bg-[#F8FAFC] border border-border" />
-                </div>
-              </div>
+            <div className="flex items-center justify-center w-full h-full min-h-[380px]">
+              <TiltCards />
             </div>
           </div>
         </div>

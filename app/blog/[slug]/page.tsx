@@ -1,95 +1,89 @@
 import React from "react";
-import { getPostBySlug, getAllPosts } from "@/lib/contentful";
-import { BlogPost } from "@/lib/contentful";
+import { getAllPosts, getPostBySlug, slugify } from "@/sanity/lib/blog";
+import type { BlogPost } from "@/sanity/lib/types";
+import { urlForImage } from "@/sanity/lib/image";
+import { PortableText } from "@portabletext/react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Clock, User, Share2, ArrowRight, Mail } from "lucide-react";
+import { Calendar, Clock, Facebook, Linkedin, Share2, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BlogCard } from "@/components/blog/blog-card";
+import { NewsletterSignup } from "@/components/blog/newsletter-signup";
+import { FooterSection } from "@/components/landing/footer-section";
+import { Navigation } from "@/components/landing/navigation";
 import { SectionContainer } from "@/components/landing/section-container";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vitalink.africa";
 
-// Custom rich text renderer for Contentful GraphQL API
-function renderRichText(content: any): React.ReactNode {
-  if (!content) return null;
-
-  const renderNode = (node: any): React.ReactNode => {
-    if (!node) return null;
-
-    switch (node.nodeType) {
-      case "heading-1":
-        return <h1 className="text-3xl font-bold text-foreground mt-8 mb-4">{renderContent(node.content)}</h1>;
-      case "heading-2":
-        return <h2 className="text-2xl font-bold text-foreground mt-8 mb-4">{renderContent(node.content)}</h2>;
-      case "heading-3":
-        return <h3 className="text-xl font-bold text-foreground mt-6 mb-3">{renderContent(node.content)}</h3>;
-      case "heading-4":
-        return <h4 className="text-lg font-bold text-foreground mt-4 mb-2">{renderContent(node.content)}</h4>;
-      case "heading-5":
-        return <h5 className="text-base font-bold text-foreground mt-4 mb-2">{renderContent(node.content)}</h5>;
-      case "heading-6":
-        return <h6 className="text-sm font-bold text-foreground mt-4 mb-2">{renderContent(node.content)}</h6>;
-      case "paragraph":
-        return <p className="text-muted-foreground leading-relaxed mb-4">{renderContent(node.content)}</p>;
-      case "list-item":
-        return <li className="text-muted-foreground mb-1">{renderContent(node.content)}</li>;
-      case "unordered-list":
-        return <ul className="list-disc pl-6 mb-4 space-y-2 text-muted-foreground">{renderContent(node.content)}</ul>;
-      case "ordered-list":
-        return <ol className="list-decimal pl-6 mb-4 space-y-2 text-muted-foreground">{renderContent(node.content)}</ol>;
-      case "blockquote":
-        return (
-          <blockquote className="border-l-4 border-[#2563EB] pl-4 my-6 italic text-muted-foreground">
-            {renderContent(node.content)}
-          </blockquote>
-        );
-      case "hr":
-        return <hr className="my-8 border-border" />;
-      case "hyperlink":
-        return (
-          <a
-            href={node.data.uri}
-            className="text-[#2563EB] hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {renderContent(node.content)}
-          </a>
-        );
-      case "text":
-        if (node.marks?.length > 0) {
-          const isBold = node.marks.some((mark: any) => mark.type === "bold");
-          const isItalic = node.marks.some((mark: any) => mark.type === "italic");
-          const isUnderline = node.marks.some((mark: any) => mark.type === "underline");
-          const isCode = node.marks.some((mark: any) => mark.type === "code");
-
-          let text = node.value;
-          if (isBold) text = <strong>{text}</strong>;
-          if (isItalic) text = <em>{text}</em>;
-          if (isUnderline) text = <u>{text}</u>;
-          if (isCode) text = <code className="bg-[#F8FAFC] px-1 py-0.5 rounded text-sm font-mono">{text}</code>;
-          return text;
-        }
-        return node.value;
-      default:
-        return null;
-    }
-  };
-
-  const renderContent = (content: any[]): React.ReactNode => {
-    if (!content) return null;
-    return content.map((node, index) => <React.Fragment key={index}>{renderNode(node)}</React.Fragment>);
-  };
-
-  return renderContent(content);
-}
-
 interface ArticlePageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
+
+const portableTextComponents = {
+  types: {
+    image: ({ value }: { value: BlogPost["featuredImage"] }) => {
+      const imageUrl = urlForImage(value)?.width(1200).height(675).url();
+      if (!imageUrl) return null;
+
+      return (
+        <div className="relative my-8 aspect-[16/9] overflow-hidden rounded-xl border border-border">
+          <Image
+            src={imageUrl}
+            alt={value?.alt || "Article image"}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 900px"
+          />
+        </div>
+      );
+    },
+  },
+  block: {
+    h2: ({ children }: { children?: React.ReactNode }) => (
+      <h2 className="mt-10 mb-4 text-2xl font-bold text-foreground">{children}</h2>
+    ),
+    h3: ({ children }: { children?: React.ReactNode }) => (
+      <h3 className="mt-8 mb-3 text-xl font-bold text-foreground">{children}</h3>
+    ),
+    normal: ({ children }: { children?: React.ReactNode }) => (
+      <p className="mb-5 text-base leading-8 text-muted-foreground">{children}</p>
+    ),
+    blockquote: ({ children }: { children?: React.ReactNode }) => (
+      <blockquote className="my-8 border-l-4 border-[#2563EB] bg-[#EFF6FF] px-5 py-4 text-muted-foreground">
+        {children}
+      </blockquote>
+    ),
+  },
+  list: {
+    bullet: ({ children }: { children?: React.ReactNode }) => (
+      <ul className="mb-6 list-disc space-y-2 pl-6 text-muted-foreground">{children}</ul>
+    ),
+    number: ({ children }: { children?: React.ReactNode }) => (
+      <ol className="mb-6 list-decimal space-y-2 pl-6 text-muted-foreground">{children}</ol>
+    ),
+  },
+  marks: {
+    link: ({
+      children,
+      value,
+    }: {
+      children?: React.ReactNode;
+      value?: { href?: string };
+    }) => (
+      <a
+        href={value?.href}
+        className="font-medium text-[#2563EB] underline-offset-4 hover:underline"
+        target={value?.href?.startsWith("http") ? "_blank" : undefined}
+        rel={value?.href?.startsWith("http") ? "noopener noreferrer" : undefined}
+      >
+        {children}
+      </a>
+    ),
+  },
+};
 
 export async function generateStaticParams() {
   const posts = await getAllPosts();
@@ -99,63 +93,71 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return {
-      title: "Article Not Found",
+      title: "Article Not Found | VitaLink Insights",
     };
   }
 
-  const imageUrl = post.featuredImage?.url
-    ? `https:${post.featuredImage.url}`
-    : "";
+  const imageUrl = urlForImage(post.featuredImage)?.width(1200).height(630).url();
+  const canonical = `${SITE_URL}/blog/${post.slug}`;
+  const title = post.seoTitle || post.title;
+  const description = post.seoDescription || post.excerpt;
 
   return {
-    title: post.seoTitle || post.title,
-    description: post.seoDescription || post.excerpt,
+    title,
+    description,
+    alternates: {
+      canonical,
+    },
     openGraph: {
-      title: post.seoTitle || post.title,
-      description: post.seoDescription || post.excerpt,
-      images: imageUrl ? [{ url: imageUrl }] : [],
+      title,
+      description,
+      url: canonical,
       type: "article",
       publishedTime: post.publishedDate,
+      modifiedTime: post._updatedAt,
       authors: [post.author],
+      images: imageUrl ? [{ url: imageUrl, alt: post.featuredImageAlt || post.title }] : [],
     },
     twitter: {
       card: "summary_large_image",
-      title: post.seoTitle || post.title,
-      description: post.seoDescription || post.excerpt,
+      title,
+      description,
       images: imageUrl ? [imageUrl] : [],
     },
   };
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   const allPosts = await getAllPosts();
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Article Not Found</h1>
-          <Link href="/blog">
-            <Button>Back to Blog</Button>
-          </Link>
-        </div>
-      </div>
+      <main className="relative min-h-screen overflow-x-hidden bg-white">
+        <Navigation />
+        <SectionContainer className="flex min-h-[60vh] items-center justify-center pt-28">
+          <div className="text-center">
+            <h1 className="mb-4 text-2xl font-bold text-foreground">Article Not Found</h1>
+            <Button asChild>
+              <Link href="/blog">Back to Blog</Link>
+            </Button>
+          </div>
+        </SectionContainer>
+        <FooterSection />
+      </main>
     );
   }
 
-  const imageUrl = post.featuredImage?.url
-    ? `https:${post.featuredImage.url}`
-    : "/placeholder.jpg";
-
-  const authorPhotoUrl = post.authorPhoto?.url
-    ? `https:${post.authorPhoto.url}`
-    : "/placeholder.jpg";
-
+  const imageUrl = urlForImage(post.featuredImage)?.width(1400).height(700).url() || "/placeholder.jpg";
+  const authorPhotoUrl = urlForImage(post.authorPhoto)?.width(120).height(120).url();
+  const categorySlug = post.categorySlug || (post.category ? slugify(post.category) : "insights");
+  const articleUrl = `${SITE_URL}/blog/${post.slug}`;
   const date = new Date(post.publishedDate).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -163,11 +165,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   });
 
   const relatedPosts = allPosts
-    .filter((p) => p.sys.id !== post.sys.id && p.category === post.category)
+    .filter((candidate) => candidate._id !== post._id && candidate.category === post.category)
     .slice(0, 3);
 
-  // Structured Data for SEO
-  const structuredData = {
+  const articleSchema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
@@ -178,7 +179,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       name: post.author,
     },
     datePublished: post.publishedDate,
-    dateModified: post.sys.updatedAt,
+    dateModified: post._updatedAt,
     publisher: {
       "@type": "Organization",
       name: "VitaLink",
@@ -189,229 +190,177 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${SITE_URL}/blog/${post.slug}`,
+      "@id": articleUrl,
     },
   };
 
-  // Breadcrumb Schema
-  const breadcrumbData = {
+  const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: SITE_URL,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Blog",
-        item: `${SITE_URL}/blog`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: post.title,
-        item: `${SITE_URL}/blog/${post.slug}`,
-      },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: articleUrl },
     ],
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Structured Data */}
+    <main className="relative min-h-screen overflow-x-hidden bg-white">
+      <Navigation />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      {/* Article Header */}
-      <article className="bg-white border-b border-border">
-        <SectionContainer className="py-12">
-          <div className="max-w-4xl mx-auto">
-            {/* Category Badge */}
-            <Link
-              href={`/category/${post.category.toLowerCase().replace(/\s+/g, "-")}`}
-              className="inline-block mb-4"
-            >
-              <span className="inline-block px-3 py-1 bg-[#2563EB] text-white text-xs font-semibold rounded-full">
-                {post.category}
-              </span>
-            </Link>
-
-            {/* Title */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-6">
-              {post.title}
-            </h1>
-
-            {/* Meta */}
-            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground mb-8">
-              <div className="flex items-center gap-2">
-                {authorPhotoUrl && (
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                    <Image
-                      src={authorPhotoUrl}
-                      alt={post.author}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
+      <article>
+        <header className="bg-white pt-28 pb-10 lg:pt-36 lg:pb-16">
+          <SectionContainer>
+            <div className="mx-auto max-w-4xl">
+              <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                <Link href="/" className="hover:text-[#2563EB]">
+                  Home
+                </Link>
+                <span>/</span>
+                <Link href="/blog" className="hover:text-[#2563EB]">
+                  Insights
+                </Link>
+                {post.category && (
+                  <>
+                    <span>/</span>
+                    <Link href={`/category/${categorySlug}`} className="hover:text-[#2563EB]">
+                      {post.category}
+                    </Link>
+                  </>
                 )}
-                <div>
-                  <p className="font-medium text-foreground">{post.author}</p>
-                  <p className="text-xs">{post.authorBio}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                <span>{date}</span>
-              </div>
-              {post.readingTime && (
-                <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  <span>{post.readingTime} min read</span>
-                </div>
+              </nav>
+
+              {post.category && (
+                <Link href={`/category/${categorySlug}`} className="inline-block">
+                  <span className="inline-flex rounded-full bg-[#EFF6FF] px-3 py-1 text-xs font-semibold text-[#2563EB]">
+                    {post.category}
+                  </span>
+                </Link>
               )}
-            </div>
 
-            {/* Social Share */}
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" className="rounded-full">
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
-            </div>
-          </div>
-        </SectionContainer>
-      </article>
+              <h1 className="mt-5 text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                {post.title}
+              </h1>
+              <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground">
+                {post.excerpt}
+              </p>
 
-      {/* Hero Image */}
-      <div className="bg-white border-b border-border">
-        <SectionContainer>
-          <div className="max-w-4xl mx-auto">
-            <div className="relative aspect-[21/9] rounded-xl overflow-hidden">
+              <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+                <div className="flex items-center gap-3">
+                  {authorPhotoUrl && (
+                    <div className="relative h-11 w-11 overflow-hidden rounded-full border border-border">
+                      <Image src={authorPhotoUrl} alt={post.author} fill className="object-cover" />
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-medium text-foreground">{post.author}</p>
+                    <p className="text-xs">{post.authorPosition || post.authorBio}</p>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  {date}
+                </span>
+                {post.readingTime && (
+                  <span className="inline-flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    {post.readingTime} min read
+                  </span>
+                )}
+              </div>
+            </div>
+          </SectionContainer>
+        </header>
+
+        <SectionContainer className="py-10">
+          <div className="mx-auto max-w-4xl">
+            <div className="relative aspect-[21/9] overflow-hidden rounded-xl border border-border bg-[#F8FAFC]">
               <Image
                 src={imageUrl}
-                alt={post.featuredImage?.title || post.title}
+                alt={post.featuredImageAlt || post.title}
                 fill
                 className="object-cover"
                 priority
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+                sizes="(max-width: 768px) 100vw, 1024px"
               />
             </div>
           </div>
         </SectionContainer>
-      </div>
 
-      {/* Article Content */}
-      <article className="bg-[#F8FAFC] py-12">
-        <SectionContainer>
-          <div className="max-w-4xl mx-auto">
-            <div className="prose prose-lg max-w-none">
-              {renderRichText(post.content.json)}
+        <SectionContainer className="pb-14 lg:pb-20">
+          <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[minmax(0,1fr)_220px]">
+            <div className="min-w-0 rounded-xl border border-border bg-white p-6 shadow-sm sm:p-8 lg:p-10">
+              {post.content?.length ? (
+                <PortableText value={post.content as never} components={portableTextComponents} />
+              ) : (
+                <p className="text-muted-foreground">{post.excerpt}</p>
+              )}
             </div>
+
+            <aside className="space-y-4">
+              <div className="rounded-xl border border-border bg-white p-5 shadow-sm">
+                <p className="mb-4 flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <Share2 className="h-4 w-4 text-[#2563EB]" />
+                  Share article
+                </p>
+                <div className="flex gap-2">
+                  <Button asChild variant="outline" size="icon" className="rounded-full">
+                    <a href={`https://twitter.com/intent/tweet?url=${articleUrl}&text=${post.title}`} aria-label="Share on Twitter">
+                      <Twitter className="h-4 w-4" />
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" size="icon" className="rounded-full">
+                    <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${articleUrl}`} aria-label="Share on LinkedIn">
+                      <Linkedin className="h-4 w-4" />
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" size="icon" className="rounded-full">
+                    <a href={`https://www.facebook.com/sharer/sharer.php?u=${articleUrl}`} aria-label="Share on Facebook">
+                      <Facebook className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </aside>
           </div>
         </SectionContainer>
       </article>
 
-      {/* Newsletter CTA */}
-      <section className="bg-gradient-to-br from-[#2563EB] to-[#7C3AED] py-16">
-        <SectionContainer>
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Stay Updated With Healthcare Innovation
-            </h2>
-            <p className="text-white/90 mb-8">
-              Get the latest healthcare insights delivered to your inbox.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder:text-white/70"
-              />
-              <Button className="bg-white text-[#2563EB] hover:bg-white/90">
-                Subscribe
-              </Button>
-            </div>
-          </div>
-        </SectionContainer>
-      </section>
-
-      {/* Related Articles */}
       {relatedPosts.length > 0 && (
-        <section className="bg-white py-12">
+        <section className="bg-[#F8FAFC] py-14 lg:py-20">
           <SectionContainer>
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold text-foreground mb-8">Related Articles</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                {relatedPosts.map((relatedPost) => (
-                  <Link
-                    key={relatedPost.sys.id}
-                    href={`/blog/${relatedPost.slug}`}
-                    className="group"
-                  >
-                    <div className="bg-[#F8FAFC] rounded-xl p-6 border border-border hover:shadow-md transition-shadow">
-                      <div className="relative aspect-[16/9] rounded-lg overflow-hidden mb-4">
-                        <Image
-                          src={
-                            relatedPost.featuredImage?.url
-                              ? `https:${relatedPost.featuredImage.url}`
-                              : "/placeholder.jpg"
-                          }
-                          alt={relatedPost.title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform"
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                        />
-                      </div>
-                      <h3 className="font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-[#2563EB] transition-colors">
-                        {relatedPost.title}
-                      </h3>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar className="w-3 h-3" />
-                        <span>
-                          {new Date(relatedPost.publishedDate).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+            <div className="mb-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563EB]">
+                Related Articles
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-foreground">
+                Continue reading
+              </h2>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {relatedPosts.map((relatedPost) => (
+                <BlogCard key={relatedPost._id} post={relatedPost} />
+              ))}
             </div>
           </SectionContainer>
         </section>
       )}
 
-      {/* Comments Placeholder */}
-      <section className="bg-[#F8FAFC] py-12">
-        <SectionContainer>
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-foreground mb-6">Comments</h2>
-            <div className="bg-white rounded-xl p-8 border border-border text-center">
-              <Mail className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground mb-4">
-                Comments are coming soon. Share your thoughts on social media in the meantime!
-              </p>
-              <Button variant="outline" className="rounded-full">
-                <Share2 className="w-4 h-4 mr-2" />
-                Share Article
-              </Button>
-            </div>
-          </div>
-        </SectionContainer>
-      </section>
-    </div>
+      <SectionContainer className="py-14 lg:py-20">
+        <NewsletterSignup variant="hero" />
+      </SectionContainer>
+
+      <FooterSection />
+    </main>
   );
 }
 
-export const revalidate = 3600; // Revalidate every hour
+export const revalidate = 60;

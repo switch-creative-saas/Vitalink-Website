@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Mail, Phone, MapPin, Clock, Calendar, Building2, Users, Globe, HeartPulse, Shield, Activity, HelpCircle, ArrowLeft } from "lucide-react";
 import { SectionContainer } from "@/components/landing/section-container";
 import { trackDemoClick } from "@/lib/analytics";
+import { Navigation } from "@/components/landing/navigation";
+import { FooterSection } from "@/components/landing/footer-section";
+import { GlobeBackground } from "@/components/GlobeBackground";
 
 export default function ContactPage() {
   const router = useRouter();
@@ -98,29 +101,17 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Back Button */}
-      <div className="py-4">
-        <SectionContainer>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.back()}
-            className="rounded-full text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-        </SectionContainer>
-      </div>
+    <main className="relative min-h-screen overflow-x-hidden bg-white">
+      <Navigation />
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#2563EB] to-[#7C3AED] py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-24">
+        <GlobeBackground />
         <SectionContainer>
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+          <div className="relative z-10 max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
               Get In Touch
             </h1>
-            <p className="mt-6 text-lg sm:text-xl text-white/90 leading-relaxed max-w-3xl mx-auto">
+            <p className="mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
               Whether you're a patient, hospital, NGO, government agency, investor, or partner, we'd love to hear from you.
             </p>
           </div>
@@ -433,6 +424,7 @@ export default function ContactPage() {
           </div>
         </SectionContainer>
       </section>
-    </div>
+      <FooterSection />
+    </main>
   );
 }

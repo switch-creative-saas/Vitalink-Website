@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { CookiePreferencesLink } from "@/components/CookiePreferencesLink";
 import { SectionContainer } from "./section-container";
 import { VitaLinkLogo } from "./vitalink-logo";
 
@@ -23,6 +24,7 @@ const footerLinks = {
   ],
   Legal: [
     { name: "Privacy Policy", href: "/privacy" },
+    { name: "Cookie Policy", href: "/cookie-policy" },
     { name: "Terms", href: "/terms" },
   ],
 };
@@ -75,6 +77,11 @@ export function FooterSection() {
                     </a>
                   </li>
                 ))}
+                {title === "Legal" && (
+                  <li>
+                    <CookiePreferencesLink className="text-left text-sm text-muted-foreground hover:text-foreground transition-colors break-words" />
+                  </li>
+                )}
               </ul>
             </div>
           ))}

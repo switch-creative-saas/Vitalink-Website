@@ -2,7 +2,9 @@ import { Calendar, Clock, ArrowRight, Search, Tag, TrendingUp, Mail, User } from
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SectionContainer } from "@/components/landing/section-container";
-import { BlogPost } from "@/lib/contentful";
+import type { BlogCategory, BlogPost } from "@/sanity/lib/types";
+import { slugify } from "@/sanity/lib/slugify";
+import { urlForImage } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,9 +14,7 @@ interface BlogCardProps {
 }
 
 export function BlogCard({ post, featured = false }: BlogCardProps) {
-  const imageUrl = post.featuredImage?.url
-    ? `https:${post.featuredImage.url}`
-    : "/placeholder.jpg";
+  const imageUrl = urlForImage(post.featuredImage)?.width(1200).height(675).url() || "/placeholder.jpg";
 
   const date = new Date(post.publishedDate).toLocaleDateString("en-US", {
     year: "numeric",
@@ -35,9 +35,11 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
             <div className="absolute top-4 left-4">
-              <span className="inline-block px-3 py-1 bg-[#2563EB] text-white text-xs font-semibold rounded-full">
-                {post.category}
-              </span>
+              {post.category && (
+                <span className="inline-block px-3 py-1 bg-[#2563EB] text-white text-xs font-semibold rounded-full">
+                  {post.category}
+                </span>
+              )}
             </div>
           </div>
           <div className="p-6">
@@ -73,7 +75,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
 }
 
 interface SidebarProps {
-  categories: string[];
+  categories: BlogCategory[];
   popularPosts: BlogPost[];
   tags: string[];
 }
@@ -105,12 +107,12 @@ export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
         </h3>
         <ul className="space-y-2">
           {categories.map((category) => (
-            <li key={category}>
+            <li key={category.slug || category.title}>
               <Link
-                href={`/category/${category.toLowerCase().replace(/\s+/g, "-")}`}
+                href={`/category/${category.slug || slugify(category.title)}`}
                 className="block text-sm text-muted-foreground hover:text-[#2563EB] transition-colors py-1"
               >
-                {category}
+                {category.title}
               </Link>
             </li>
           ))}
@@ -125,7 +127,7 @@ export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
         </h3>
         <ul className="space-y-4">
           {popularPosts.slice(0, 5).map((post) => (
-            <li key={post.sys.id}>
+            <li key={post._id}>
               <Link href={`/blog/${post.slug}`} className="block group">
                 <h4 className="text-sm font-medium text-foreground group-hover:text-[#2563EB] transition-colors line-clamp-2">
                   {post.title}
@@ -152,7 +154,7 @@ export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
           {tags.slice(0, 15).map((tag) => (
             <Link
               key={tag}
-              href={`/tag/${tag.toLowerCase().replace(/\s+/g, "-")}`}
+              href={`/tag/${slugify(tag)}`}
               className="inline-block px-3 py-1 bg-[#F8FAFC] text-sm text-muted-foreground hover:bg-[#2563EB] hover:text-white rounded-full transition-colors"
             >
               {tag}

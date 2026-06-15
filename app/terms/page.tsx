@@ -5,6 +5,8 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionContainer } from "@/components/landing/section-container";
 import { LegalPageLayout } from "@/components/legal/legal-page-layout";
+import { Navigation } from "@/components/landing/navigation";
+import { FooterSection } from "@/components/landing/footer-section";
 
 const termsSections = [
   { id: "acceptance", title: "Acceptance of Terms" },
@@ -32,21 +34,8 @@ export default function TermsOfUse() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Back Button */}
-      <div className="py-4">
-        <SectionContainer>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.back()}
-            className="rounded-full text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-        </SectionContainer>
-      </div>
+    <main className="relative min-h-screen overflow-x-hidden bg-white">
+      <Navigation />
       <LegalPageLayout
       title="Terms of Use"
       lastUpdated="June 4, 2026"
@@ -345,6 +334,7 @@ export default function TermsOfUse() {
         </div>
       </section>
     </LegalPageLayout>
-    </div>
+      <FooterSection />
+    </main>
   );
 }

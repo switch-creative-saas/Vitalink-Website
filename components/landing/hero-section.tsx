@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Building2, Globe, HeartPulse, Users } from "lucide-react";
+import { GlobeBackground } from "@/components/GlobeBackground";
 import { SectionContainer } from "./section-container";
 import { VitaCardMockup } from "./vita-card-mockup";
 import { trackDemoClick } from "@/lib/analytics";
@@ -22,8 +23,9 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative bg-white overflow-visible">
-      <SectionContainer className="py-16 sm:py-20 lg:py-24">
+    <section className="relative overflow-hidden bg-white">
+      <GlobeBackground />
+      <SectionContainer className="relative z-10 pt-24 pb-16 sm:pt-28 sm:pb-20 lg:pt-32 lg:pb-24">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center min-w-0">
           <div
             className={`min-w-0 transition-premium ${

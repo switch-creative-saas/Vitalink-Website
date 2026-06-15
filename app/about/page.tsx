@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Mail, Building2, Users, Globe, HeartPulse, Shield, Brain, Activity, Zap, Lock, MapPin, Smartphone, ArrowLeft } from "lucide-react";
 import { SectionContainer } from "@/components/landing/section-container";
+import { Navigation } from "@/components/landing/navigation";
+import { FooterSection } from "@/components/landing/footer-section";
+import { GlobeBackground } from "@/components/GlobeBackground";
 import { cn } from "@/lib/utils";
 import { trackDemoClick } from "@/lib/analytics";
 
@@ -106,35 +109,23 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Back Button */}
-      <div className="py-4">
-        <SectionContainer>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.back()}
-            className="rounded-full text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-        </SectionContainer>
-      </div>
+    <main className="relative min-h-screen overflow-x-hidden bg-white">
+      <Navigation />
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#2563EB] to-[#7C3AED] py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-24">
+        <GlobeBackground />
         <SectionContainer>
-          <div className={`max-w-4xl mx-auto text-center transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+          <div className={`relative z-10 max-w-4xl mx-auto text-center transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
               Building Africa's Healthcare Infrastructure
             </h1>
-            <p className="mt-6 text-lg sm:text-xl text-white/90 leading-relaxed max-w-3xl mx-auto">
+            <p className="mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
               VitaLink is an offline-first healthcare operating system connecting patients, healthcare providers, public health agencies, insurers, and governments through a single interoperable platform.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-white text-[#2563EB] hover:bg-white/90 rounded-xl h-12 px-8 font-medium"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 px-8 font-medium"
                 asChild
               >
                 <a href="#waitlist">Join Waitlist</a>
@@ -142,7 +133,7 @@ export default function AboutPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-transparent border-white text-white hover:bg-white/10 rounded-xl h-12 px-8 font-medium"
+                className="bg-white border-border text-foreground hover:bg-[#F8FAFC] rounded-xl h-12 px-8 font-medium"
                 onClick={() => trackDemoClick("about_page")}
                 asChild
               >
@@ -403,6 +394,7 @@ export default function AboutPage() {
           </div>
         </SectionContainer>
       </section>
-    </div>
+      <FooterSection />
+    </main>
   );
 }

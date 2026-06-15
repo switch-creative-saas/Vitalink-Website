@@ -7,11 +7,11 @@ import { SectionContainer } from "./section-container";
 import { VitaLinkLogo } from "./vitalink-logo";
 
 const navLinks = [
-  { name: "Home", href: "#" },
-  { name: "Features", href: "#features" },
-  { name: "Solutions", href: "#solutions" },
-  { name: "Pricing", href: "#pricing" },
-  { name: "About", href: "#about" },
+  { name: "Home", href: "/" },
+  { name: "Features", href: "/#features" },
+  { name: "Solutions", href: "/#solutions" },
+  { name: "Pricing", href: "/#pricing" },
+  { name: "About", href: "/about" },
   { name: "Blog", href: "/blog" },
 ];
 
@@ -21,19 +21,47 @@ export function Navigation() {
 
   const closeMenu = () => setIsMobileMenuOpen(false);
 
+  const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    closeMenu();
+
+    if (!href.startsWith("/#") || window.location.pathname !== "/") {
+      return;
+    }
+
+    const target = document.getElementById(href.slice(2));
+
+    if (!target) {
+      return;
+    }
+
+    event.preventDefault();
+    window.history.pushState(null, "", href);
+    window.scrollTo({
+      top: target.getBoundingClientRect().top + window.scrollY - 88,
+      behavior: "smooth",
+    });
+  };
+
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 60);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <header className={`z-50 bg-white/95 backdrop-blur-sm transition-all duration-300 ${isScrolled ? 'fixed top-0 left-0 right-0 shadow-md' : 'relative'}`}>
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/90 backdrop-blur-md border-b border-[#8B5CF6]/15"
+          : "bg-transparent"
+      }`}
+    >
       <SectionContainer as="nav" className="flex items-center justify-between h-16 md:h-[72px]">
-        <a href="#" className="shrink-0" onClick={closeMenu}>
+        <a href="/" className="shrink-0" onClick={closeMenu}>
           <VitaLinkLogo size="md" />
         </a>
 
@@ -43,6 +71,7 @@ export function Navigation() {
               key={link.name}
               href={link.href}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              onClick={(event) => handleNavClick(event, link.href)}
             >
               {link.name}
             </a>
@@ -70,14 +99,14 @@ export function Navigation() {
       </SectionContainer>
 
       {isMobileMenuOpen && (
-        <div className="lg:hidden border-t border-border bg-white">
+        <div className="lg:hidden border-t border-[#8B5CF6]/15 bg-white/95 backdrop-blur-md">
           <SectionContainer className="py-4 flex flex-col gap-1">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
                 className="py-3 text-sm font-medium text-foreground hover:text-primary transition-colors"
-                onClick={closeMenu}
+                onClick={(event) => handleNavClick(event, link.href)}
               >
                 {link.name}
               </a>

@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { SectionContainer } from "@/components/landing/section-container";
+import { Navigation } from "@/components/landing/navigation";
+import { FooterSection } from "@/components/landing/footer-section";
 import { VitaLinkLogo } from "@/components/landing/vitalink-logo";
-import { trackEvent, trackWaitlistSignup } from "@/lib/analytics";
+import { GlobeBackground } from "@/components/GlobeBackground";
+import { trackEvent } from "@/lib/analytics";
 
 export default function WaitlistPage() {
-  const router = useRouter();
   const [showSuccess, setShowSuccess] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -35,8 +36,12 @@ export default function WaitlistPage() {
 
   if (showSuccess) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center py-12 px-4">
-        <div className="max-w-2xl w-full text-center">
+      <main className="relative min-h-screen overflow-x-hidden bg-white">
+        <Navigation />
+        <section className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-24 min-h-[72vh] flex items-center">
+          <GlobeBackground />
+          <SectionContainer>
+            <div className="relative z-10 max-w-2xl mx-auto text-center">
           {/* Confetti Animation */}
           {showConfetti && (
             <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
@@ -100,7 +105,10 @@ export default function WaitlistPage() {
               <a href="/about">Learn More</a>
             </Button>
           </div>
-        </div>
+            </div>
+          </SectionContainer>
+        </section>
+        <FooterSection />
 
         <style jsx global>{`
           @keyframes float {
@@ -118,39 +126,32 @@ export default function WaitlistPage() {
             animation: float linear forwards;
           }
         `}</style>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-12 px-4">
-      {/* Back Button */}
-      <div className="py-4">
+    <main className="relative min-h-screen overflow-x-hidden bg-white">
+      <Navigation />
+      <section className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-24">
+        <GlobeBackground />
         <SectionContainer>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.back()}
-            className="rounded-full text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-        </SectionContainer>
-      </div>
-      <SectionContainer>
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <VitaLinkLogo size="lg" className="justify-center mb-6" />
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+          <div className="relative z-10 max-w-4xl mx-auto text-center">
+            <span className="inline-flex items-center rounded-full bg-white/85 border border-[#8B5CF6]/15 px-4 py-2 text-sm font-semibold text-primary shadow-sm">
+              VitaLink Waitlist
+            </span>
+            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight text-balance">
               Join the VitaLink Waitlist
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
               Be among the first to experience Africa's next-generation healthcare infrastructure.
             </p>
           </div>
+        </SectionContainer>
+      </section>
 
+      <SectionContainer className="py-14 lg:py-20">
+        <div className="max-w-4xl mx-auto">
           {/* Tally Form Container */}
           <div className="bg-white rounded-[20px] shadow-lg border border-border p-6 sm:p-8 max-w-[800px] mx-auto">
             <div className="w-full" style={{ minHeight: "600px" }}>
@@ -180,6 +181,7 @@ export default function WaitlistPage() {
           </div>
         </div>
       </SectionContainer>
-    </div>
+      <FooterSection />
+    </main>
   );
 }
