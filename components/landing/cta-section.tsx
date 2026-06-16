@@ -45,14 +45,15 @@ export function CtaSection() {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </a>
               </Button>
-              <Button
-                variant="outline"
-                className="h-12 px-6 rounded-xl border-white/30 text-white hover:bg-white/10 font-semibold shrink-0 w-full sm:w-auto"
+              <a
+                href="https://calendar.app.google/mpgibQjd3RzayAvx9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-indigo-600 bg-white border-2 border-white hover:bg-indigo-50 hover:border-indigo-100 transition-all duration-200 text-sm"
                 onClick={() => trackDemoClick("cta_section")}
-                asChild
               >
-                <a href="/contact">Request Demo</a>
-              </Button>
+                Request Demo
+              </a>
             </div>
           </div>
 

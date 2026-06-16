@@ -301,7 +301,11 @@ export default function ContactPage() {
               className="bg-[#2563EB] hover:bg-[#2563EB]/90 text-white rounded-xl h-12 px-8 font-medium"
               asChild
             >
-              <a href="mailto:partnerships@vitalink.africa?subject=Demo Request">
+              <a
+                href="https://calendar.app.google/mpgibQjd3RzayAvx9"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Schedule Demo
               </a>
             </Button>
@@ -418,7 +422,13 @@ export default function ContactPage() {
                 onClick={() => trackDemoClick("contact_page")}
                 asChild
               >
-                <a href="mailto:partnerships@vitalink.africa?subject=Demo Request">Request Demo</a>
+                <a
+                  href="https://calendar.app.google/mpgibQjd3RzayAvx9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Request Demo
+                </a>
               </Button>
             </div>
           </div>

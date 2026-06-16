@@ -94,7 +94,13 @@ export default function WaitlistPage() {
               className="border-[#2563EB] text-[#2563EB] hover:bg-[#2563EB]/10 rounded-xl h-12 px-8 font-medium"
               asChild
             >
-              <a href="/contact">Request Demo</a>
+              <a
+                href="https://calendar.app.google/mpgibQjd3RzayAvx9"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Request Demo
+              </a>
             </Button>
             <Button
               size="lg"
