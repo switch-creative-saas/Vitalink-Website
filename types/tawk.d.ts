@@ -23,5 +23,6 @@ declare global {
     Tawk_LoadStart?: Date;
     __vitalinkTawkLoaded?: boolean;
     __vitalinkTawkErrorGuard?: boolean;
+    __vitalinkTawkConsoleGuard?: boolean;
   }
 }

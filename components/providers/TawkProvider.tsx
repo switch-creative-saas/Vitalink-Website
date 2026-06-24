@@ -24,6 +24,21 @@ const tawkInitScript = `
       }
     }, true);
   }
+
+  if (!window.__vitalinkTawkConsoleGuard) {
+    window.__vitalinkTawkConsoleGuard = true;
+    var originalConsoleError = window.console && window.console.error;
+
+    if (typeof originalConsoleError === "function") {
+      window.console.error = function() {
+        if (arguments.length === 1 && arguments[0] === true) {
+          return;
+        }
+
+        return originalConsoleError.apply(window.console, arguments);
+      };
+    }
+  }
 `;
 
 export function TawkProvider() {
