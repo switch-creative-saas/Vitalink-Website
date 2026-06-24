@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Analytics } from "@vercel/analytics/next";
+import { useEffect, useState } from "react";
 import { Check, Cookie, Shield, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -168,11 +167,6 @@ export function CookieConsent() {
   const [showModal, setShowModal] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
-  const analyticsEnabled = useMemo(
-    () => hasConsent && preferences.analytics,
-    [hasConsent, preferences.analytics]
-  );
-
   useEffect(() => {
     const storedConsent = readStoredConsent();
 
@@ -227,8 +221,6 @@ export function CookieConsent() {
 
   return (
     <>
-      {analyticsEnabled && <Analytics />}
-
       {!hasConsent && (
         <div className="fixed inset-x-0 bottom-0 z-[70] p-4 sm:p-6">
           <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-[#8B5CF6]/20 bg-white/95 shadow-2xl shadow-[#4F46E5]/15 backdrop-blur-xl">

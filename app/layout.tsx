@@ -1,6 +1,7 @@
 import React from "react"
 import type { Metadata, Viewport } from 'next'
 import { Instrument_Sans, JetBrains_Mono } from 'next/font/google'
+import { Analytics } from "@vercel/analytics/next"
 import { CookieConsent } from '@/components/CookieConsent'
 import { TawkProvider } from '@/components/providers/TawkProvider'
 import './globals.css'
@@ -79,6 +80,7 @@ export default function RootLayout({
         {children}
         <CookieConsent />
         <TawkProvider />
+        <Analytics />
       </body>
     </html>
   )
