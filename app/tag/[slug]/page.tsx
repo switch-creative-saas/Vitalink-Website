@@ -27,6 +27,14 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
   return {
     title: `${tagName} | VitaLink Insights`,
     description: `Explore articles tagged with ${tagName} on VitaLink Insights - healthcare innovation and public health intelligence.`,
+    alternates: {
+      canonical: `https://vitalink.africa/tag/${slug}`,
+    },
+    openGraph: {
+      title: `${tagName} | VitaLink Insights`,
+      description: `Explore articles tagged with ${tagName} on VitaLink Insights - healthcare innovation and public health intelligence.`,
+      url: `https://vitalink.africa/tag/${slug}`,
+    },
   };
 }
 

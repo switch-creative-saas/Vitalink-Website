@@ -19,16 +19,16 @@ import { Search } from "lucide-react";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vitalink.africa";
 
 export const metadata: Metadata = {
-  title: "VitaLink Insights | Healthcare Innovation Across Africa",
+  title: "VitaLink Blog",
   description:
-    "Healthcare innovation, public health intelligence, digital transformation, and healthcare infrastructure across Africa.",
+    "Research, perspectives, and updates on healthcare infrastructure, AI in medicine, disease surveillance, and public health across Africa from the VitaLink team.",
   alternates: {
     canonical: `${SITE_URL}/blog`,
   },
   openGraph: {
-    title: "VitaLink Insights",
+    title: "VitaLink Blog",
     description:
-      "Healthcare innovation, public health intelligence, digital transformation, and healthcare infrastructure across Africa.",
+      "Insights on healthcare infrastructure, AI in medicine, and public health across Africa.",
     url: `${SITE_URL}/blog`,
     type: "website",
   },
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "VitaLink Insights",
     description:
-      "Healthcare innovation, public health intelligence, digital transformation, and healthcare infrastructure across Africa.",
+      "Research and updates on healthcare infrastructure, AI in medicine, disease surveillance, and public health across Africa.",
   },
 };
 

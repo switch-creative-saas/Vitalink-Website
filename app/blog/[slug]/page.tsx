@@ -32,7 +32,7 @@ const portableTextComponents = {
         <div className="relative my-8 aspect-[16/9] overflow-hidden rounded-xl border border-border">
           <Image
             src={imageUrl}
-            alt={value?.alt || "Article image"}
+            alt={value?.alt || "VitaLink article supporting visual"}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 900px"

@@ -4,9 +4,18 @@ import { Navigation } from "@/components/landing/navigation";
 import { FooterSection } from "@/components/landing/footer-section";
 
 export const metadata: Metadata = {
-  title: "Cookie Policy | VitaLink",
+  title: "Cookie Policy",
   description:
     "Learn how VitaLink uses cookies and similar technologies for security, preferences, analytics, and optional marketing.",
+  alternates: {
+    canonical: "https://vitalink.africa/cookie-policy",
+  },
+  openGraph: {
+    title: "Cookie Policy | VitaLink",
+    description:
+      "Learn how VitaLink uses cookies and similar technologies for security, preferences, analytics, and optional marketing.",
+    url: "https://vitalink.africa/cookie-policy",
+  },
 };
 
 const cookieSections = [

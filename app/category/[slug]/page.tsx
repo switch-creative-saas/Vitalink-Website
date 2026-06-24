@@ -30,6 +30,16 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     description:
       category?.description ||
       `Explore ${title} articles on VitaLink Insights - healthcare innovation and public health intelligence.`,
+    alternates: {
+      canonical: `https://vitalink.africa/category/${slug}`,
+    },
+    openGraph: {
+      title: `${title} | VitaLink Insights`,
+      description:
+        category?.description ||
+        `Explore ${title} articles on VitaLink Insights - healthcare innovation and public health intelligence.`,
+      url: `https://vitalink.africa/category/${slug}`,
+    },
   };
 }
 

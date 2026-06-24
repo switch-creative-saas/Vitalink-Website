@@ -5,7 +5,9 @@ import { VitaLinkLogo } from "./vitalink-logo";
 
 const footerLinks = {
   Company: [
+    { name: "Home", href: "/" },
     { name: "About", href: "/about" },
+    { name: "Pricing", href: "/#pricing" },
     { name: "Careers", href: "/careers" },
     { name: "Contact", href: "/contact" },
     { name: "Blog", href: "/blog" },
@@ -25,7 +27,7 @@ const footerLinks = {
   Legal: [
     { name: "Privacy Policy", href: "/privacy" },
     { name: "Cookie Policy", href: "/cookie-policy" },
-    { name: "Terms", href: "/terms" },
+    { name: "Terms of Service", href: "/terms" },
   ],
 };
 
@@ -42,7 +44,7 @@ export function FooterSection() {
       <SectionContainer as="footer" className="py-16 lg:py-20">
         <div id="about" className="grid grid-cols-2 md:grid-cols-6 gap-10 lg:gap-8 min-w-0">
           <div className="col-span-2 min-w-0">
-            <a href="#" className="inline-block">
+            <a href="/" className="inline-block">
               <VitaLinkLogo size="md" />
             </a>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-xs">

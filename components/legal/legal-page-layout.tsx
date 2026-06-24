@@ -102,9 +102,9 @@ export function LegalPageLayout({
           {/* Table of Contents - Sticky on Desktop */}
           <aside className="lg:w-72 shrink-0">
             <nav className="lg:sticky lg:top-24">
-              <h3 className="text-sm font-semibold text-foreground mb-4">
+              <h2 className="text-sm font-semibold text-foreground mb-4">
                 Table of Contents
-              </h3>
+              </h2>
               <ul className="space-y-2">
                 {sections.map((section) => (
                   <li key={section.id}>
