@@ -1,13 +1,13 @@
 import type { MetadataRoute } from "next";
-import { getAllCategories, getAllPosts, getAllTags, slugify } from "@/sanity/lib/blog";
+import { getAllCategories, getAllPosts, getAllTagSlugs, slugify } from "@/sanity/lib/blog";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vitalink.africa";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [posts, categories, tags] = await Promise.all([
+  const [posts, categories, tagSlugs] = await Promise.all([
     getAllPosts(),
     getAllCategories(),
-    getAllTags(),
+    getAllTagSlugs(),
   ]);
 
   const staticPages = [
@@ -87,11 +87,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  const tagPages = tags.map((tag) => ({
-    url: `${SITE_URL}/tag/${slugify(tag)}`,
+  const tagPages = tagSlugs.map((slug) => ({
+    url: `${SITE_URL}/tag/${slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
-    priority: 0.6,
+    priority: 0.5,
   }));
 
   return [...staticPages, ...blogPages, ...categoryPages, ...tagPages];

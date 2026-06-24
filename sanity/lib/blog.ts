@@ -11,13 +11,13 @@ import {
   searchPostsQuery,
   tagsQuery,
 } from "../queries/blog";
-import type { BlogCategory, BlogPost } from "./types";
+import type { BlogCategory, BlogPost, BlogTag } from "./types";
 export { slugify } from "./slugify";
 export type { BlogCategory, BlogImage, BlogPost } from "./types";
 
 const emptyPosts: BlogPost[] = [];
 const emptyCategories: BlogCategory[] = [];
-const emptyTags: string[] = [];
+const emptyTags: BlogTag[] = [];
 
 async function fetchFromSanity<T>(
   query: string,
@@ -61,8 +61,8 @@ export async function getPostsByCategory(slug: string) {
   );
 }
 
-export async function getPostsByTag(tag: string) {
-  return (await fetchFromSanity<BlogPost[]>(postsByTagQuery, { tag })) ?? emptyPosts;
+export async function getPostsByTagSlug(slug: string) {
+  return (await fetchFromSanity<BlogPost[]>(postsByTagQuery, { slug }, ["blogPost", "tag"])) ?? emptyPosts;
 }
 
 export async function searchPosts(query: string) {
@@ -83,5 +83,10 @@ export async function getAllCategories() {
 }
 
 export async function getAllTags() {
-  return (await fetchFromSanity<string[]>(tagsQuery)) ?? emptyTags;
+  return (await fetchFromSanity<BlogTag[]>(tagsQuery, {}, ["tag"])) ?? emptyTags;
+}
+
+export async function getAllTagSlugs() {
+  const tags = await getAllTags();
+  return tags.map((tag) => tag.slug).filter(Boolean);
 }

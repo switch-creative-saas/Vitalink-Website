@@ -85,8 +85,7 @@ export const blogPost = defineType({
       name: "tags",
       title: "Tags",
       type: "array",
-      of: [defineArrayMember({ type: "string" })],
-      options: { layout: "tags" },
+      of: [defineArrayMember({ type: "reference", to: [{ type: "tag" }] })],
     }),
     defineField({
       name: "publishedDate",

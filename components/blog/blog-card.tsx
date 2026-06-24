@@ -2,7 +2,7 @@ import { Calendar, Clock, ArrowRight, Search, Tag, TrendingUp, Mail, User } from
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SectionContainer } from "@/components/landing/section-container";
-import type { BlogCategory, BlogPost } from "@/sanity/lib/types";
+import type { BlogCategory, BlogPost, BlogTag } from "@/sanity/lib/types";
 import { slugify } from "@/sanity/lib/slugify";
 import { urlForImage } from "@/sanity/lib/image";
 import Image from "next/image";
@@ -77,7 +77,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
 interface SidebarProps {
   categories: BlogCategory[];
   popularPosts: BlogPost[];
-  tags: string[];
+  tags: BlogTag[];
 }
 
 export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
@@ -153,11 +153,11 @@ export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
         <div className="flex flex-wrap gap-2">
           {tags.slice(0, 15).map((tag) => (
             <Link
-              key={tag}
-              href={`/tag/${slugify(tag)}`}
+              key={tag.slug || tag.name}
+              href={`/tag/${tag.slug || slugify(tag.name)}`}
               className="inline-block px-3 py-1 bg-[#F8FAFC] text-sm text-muted-foreground hover:bg-[#2563EB] hover:text-white rounded-full transition-colors"
             >
-              {tag}
+              {tag.name}
             </Link>
           ))}
         </div>

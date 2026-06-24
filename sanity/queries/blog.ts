@@ -13,7 +13,7 @@ export const postFields = `
   "authorPosition": author->position,
   "category": category->title,
   "categorySlug": category->slug.current,
-  tags,
+  "tags": tags[]->{ name, "slug": slug.current },
   publishedDate,
   seoTitle,
   seoDescription,
@@ -55,7 +55,7 @@ export const postsByCategoryQuery = `
 `;
 
 export const postsByTagQuery = `
-  *[_type == "blogPost" && ${publishedFilter} && $tag in tags] | order(publishedDate desc) {
+  *[_type == "blogPost" && ${publishedFilter} && $slug in tags[]->slug.current] | order(publishedDate desc) {
     ${postFields}
   }
 `;
@@ -68,7 +68,7 @@ export const searchPostsQuery = `
       title match $query ||
       excerpt match $query ||
       pt::text(content) match $query ||
-      $query in tags
+      tags[]->name match $query
     )
   ] | order(publishedDate desc) {
     ${postFields}
@@ -84,5 +84,8 @@ export const categoriesQuery = `
 `;
 
 export const tagsQuery = `
-  array::unique(*[_type == "blogPost" && ${publishedFilter} && defined(tags)].tags[])
+  *[_type == "tag" && defined(slug.current)] | order(name asc) {
+    name,
+    "slug": slug.current
+  }
 `;

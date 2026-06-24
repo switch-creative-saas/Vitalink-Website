@@ -1,4 +1,4 @@
-import { getAllTags, getPostsByTag, slugify } from "@/sanity/lib/blog";
+import { getAllTagSlugs, getAllTags, getPostsByTagSlug } from "@/sanity/lib/blog";
 import { BlogCard } from "@/components/blog/blog-card";
 import { FooterSection } from "@/components/landing/footer-section";
 import { Navigation } from "@/components/landing/navigation";
@@ -13,16 +13,14 @@ interface TagPageProps {
 }
 
 export async function generateStaticParams() {
-  const tags = await getAllTags();
-  return tags.map((tag) => ({
-    slug: slugify(tag),
-  }));
+  const slugs = await getAllTagSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
   const { slug } = await params;
   const tags = await getAllTags();
-  const tagName = tags.find((tag) => slugify(tag) === slug) || slug.split("-").join(" ");
+  const tagName = tags.find((tag) => tag.slug === slug)?.name || slug.split("-").join(" ");
 
   return {
     title: `${tagName} | VitaLink Insights`,
@@ -41,8 +39,8 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
 export default async function TagPage({ params }: TagPageProps) {
   const { slug } = await params;
   const tags = await getAllTags();
-  const tagName = tags.find((tag) => slugify(tag) === slug) || slug.split("-").join(" ");
-  const posts = await getPostsByTag(tagName);
+  const tagName = tags.find((tag) => tag.slug === slug)?.name || slug.split("-").join(" ");
+  const posts = await getPostsByTagSlug(slug);
 
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-white">

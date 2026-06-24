@@ -14,6 +14,11 @@ export interface BlogCategory {
   description?: string;
 }
 
+export interface BlogTag {
+  name: string;
+  slug: string;
+}
+
 export interface BlogPost {
   _id: string;
   _updatedAt: string;
@@ -29,7 +34,7 @@ export interface BlogPost {
   authorPosition?: string;
   category?: string;
   categorySlug?: string;
-  tags?: string[];
+  tags?: BlogTag[];
   publishedDate: string;
   seoTitle?: string;
   seoDescription?: string;
