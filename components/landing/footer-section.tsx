@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Instagram, Linkedin } from "lucide-react";
 import { CookiePreferencesLink } from "@/components/CookiePreferencesLink";
 import { SectionContainer } from "./section-container";
 import { VitaLinkLogo } from "./vitalink-logo";
@@ -32,10 +32,12 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { name: "Twitter", href: "#", icon: Twitter },
-  { name: "LinkedIn", href: "#", icon: Linkedin },
-  { name: "Facebook", href: "#", icon: Facebook },
-  { name: "Instagram", href: "#", icon: Instagram },
+  { name: "LinkedIn", href: "https://www.linkedin.com/company/vitalink-africa", icon: Linkedin },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/vitalink.africa?igsh=MXVxYm10ajI3eHAyeA==",
+    icon: Instagram,
+  },
 ];
 
 export function FooterSection() {
@@ -57,6 +59,8 @@ export function FooterSection() {
                   key={name}
                   href={href}
                   aria-label={name}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-colors"
                 >
                   <Icon className="w-4 h-4" />

@@ -146,6 +146,9 @@ importers:
       input-otp:
         specifier: 1.4.1
         version: 1.4.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      loops:
+        specifier: ^7.0.0
+        version: 7.0.0
       lucide-react:
         specifier: ^0.454.0
         version: 0.454.0(react@19.2.0)
@@ -5967,6 +5970,10 @@ packages:
 
   log-symbols@7.0.1:
     resolution: {integrity: sha512-ja1E3yCr9i/0hmBVaM0bfwDjnGy8I/s6PP4DFp+yP+a+mrHO4Rm7DtmnqROTUkHIkqffC84YY7AeqX6oFk0WFg==}
+    engines: {node: '>=18'}
+
+  loops@7.0.0:
+    resolution: {integrity: sha512-TNbnJndtZwE7Esmc6+xKy3xWZOqzq8xQ5IqvZ+CBS9MOjqcx8qgyfsWoW4F7oNZGkX7uS1+RDxvUAswwD2hR5Q==}
     engines: {node: '>=18'}
 
   loose-envify@1.4.0:
@@ -14317,6 +14324,8 @@ snapshots:
     dependencies:
       is-unicode-supported: 2.1.0
       yoctocolors: 2.1.2
+
+  loops@7.0.0: {}
 
   loose-envify@1.4.0:
     dependencies:

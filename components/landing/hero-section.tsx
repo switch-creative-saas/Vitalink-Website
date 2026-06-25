@@ -7,6 +7,7 @@ import { GlobeBackground } from "@/components/GlobeBackground";
 import { SectionContainer } from "./section-container";
 import { VitaCardMockup } from "./vita-card-mockup";
 import { trackDemoClick } from "@/lib/analytics";
+import NewsletterForm from "@/components/NewsletterForm";
 
 const trustPartners = [
   { label: "Hospitals", icon: Building2 },
@@ -68,6 +69,13 @@ export function HeroSection() {
               >
                 Request Demo
               </a>
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-border max-w-sm">
+              <p className="text-muted-foreground text-xs font-semibold uppercase tracking-widest mb-3">
+                Get VitaLink updates
+              </p>
+              <NewsletterForm variant="hero" placeholder="Your email address" />
             </div>
 
             <div className="mt-10 pt-8 border-t border-border">

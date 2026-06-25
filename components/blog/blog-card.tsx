@@ -1,12 +1,11 @@
 import { Calendar, Clock, ArrowRight, Search, Tag, TrendingUp, Mail, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SectionContainer } from "@/components/landing/section-container";
 import type { BlogCategory, BlogPost, BlogTag } from "@/sanity/lib/types";
 import { slugify } from "@/sanity/lib/slugify";
 import { urlForImage } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
+import NewsletterForm from "@/components/NewsletterForm";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -172,17 +171,7 @@ export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
         <p className="text-sm text-white/90 mb-4">
           Get the latest healthcare insights delivered to your inbox.
         </p>
-        <Input
-          type="email"
-          placeholder="Enter your email"
-          className="bg-white/20 border-white/30 text-white placeholder:text-white/70 mb-3"
-        />
-        <Button
-          size="sm"
-          className="w-full bg-white text-[#2563EB] hover:bg-white/90"
-        >
-          Subscribe
-        </Button>
+        <NewsletterForm variant="blog" placeholder="Enter your email" />
       </div>
     </aside>
   );
