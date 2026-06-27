@@ -5,7 +5,6 @@ import { ArrowRight } from "lucide-react";
 import { SectionContainer } from "./section-container";
 import { VitaCardMockup } from "./vita-card-mockup";
 import { trackDemoClick } from "@/lib/analytics";
-import NewsletterForm from "@/components/NewsletterForm";
 
 export function CtaSection() {
   return (
@@ -57,12 +56,6 @@ export function CtaSection() {
               </a>
             </div>
 
-            <div className="mt-8 pt-8 border-t border-white/15 max-w-md">
-              <p className="text-blue-100 text-xs font-semibold uppercase tracking-widest mb-3">
-                Get VitaLink updates
-              </p>
-              <NewsletterForm variant="blog" placeholder="Your email address" />
-            </div>
           </div>
 
           <div className="hidden sm:flex justify-center lg:justify-end min-w-0">
