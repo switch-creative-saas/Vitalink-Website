@@ -11,7 +11,7 @@ export function CookiePreferencesLink({ className }: CookiePreferencesLinkProps)
       className={className}
       onClick={() => window.dispatchEvent(new Event("vitalink:open-cookie-preferences"))}
     >
-      Cookie Preferences
+      Cookie preferences
     </button>
   );
 }
