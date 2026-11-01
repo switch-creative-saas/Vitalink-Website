@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrowRight, Building2, CalendarDays, CheckCircle2, Clock, Globe, HelpCircle, Loader2, Mail, Shield, Users } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { trackDemoClick } from "@/lib/analytics";
-import { DEMO_URL } from "@/lib/site-links";
+import { DEMO_URL, LAUNCHED } from "@/lib/site-links";
 import { sendContactMessage } from "@/lib/contact";
 import { SectionContainer } from "@/components/landing/section-container";
 import { Navigation } from "@/components/landing/navigation";
@@ -37,7 +37,9 @@ const subjects = [
 const faqs = [
   {
     q: "How does a hospital get started?",
-    a: "Sign up at app.vitalink.africa for a 14-day trial of the Growth plan. No card is needed. If you'd like a walkthrough first, book a demo and we'll show you the workspace with your own workflows in mind.",
+    a: LAUNCHED
+      ? "Sign up at app.vitalink.africa for a 14-day trial of the Growth plan. No card is needed. If you'd like a walkthrough first, book a demo and we'll show you the workspace with your own workflows in mind."
+      : "We're onboarding our first facilities now. Join the waitlist and we'll be in touch. If you'd like a walkthrough first, book a demo and we'll show you the workspace with your own workflows in mind.",
   },
   {
     q: "Can you help us move our existing records?",

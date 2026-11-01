@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ArrowRight, Check, Radar } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { registerUrl, type PlanId } from "@/lib/site-links";
+import { LAUNCHED, registerUrl, type PlanId } from "@/lib/site-links";
 import { SplitText } from "./motion";
 import { Reveal } from "./reveal";
 import { SectionContainer } from "./section-container";
@@ -99,7 +99,9 @@ export function PricingSection() {
         <Reveal className="mx-auto max-w-3xl text-center">
           <SplitText text="Simple pricing in naira" className="text-4xl font-normal leading-[1.08] tracking-[-0.03em] text-ink text-balance sm:text-5xl lg:text-6xl" />
           <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
-            Pay monthly or yearly through Paystack. Manage your plan from inside your workspace.
+            {LAUNCHED
+              ? "Pay monthly or yearly through Paystack. Manage your plan from inside your workspace."
+              : "Plans open at launch. Join the waitlist for early access; you'll pay monthly or yearly through Paystack."}
           </p>
 
           <div className="mt-8 inline-flex rounded-full bg-surface p-1" role="group" aria-label="Billing cycle">
@@ -174,9 +176,9 @@ export function PricingSection() {
                       : "bg-ink text-white hover:bg-primary"
                   )}
                 >
-                  {plan.cta}
+                  {LAUNCHED || !plan.planId ? plan.cta : "Join waitlist"}
                 </a>
-                {plan.planId === "growth" && (
+                {LAUNCHED && plan.planId === "growth" && (
                   <a
                     href={registerUrl("trial")}
                     className="mt-3 text-center text-xs text-white/80 underline-offset-4 hover:text-white hover:underline"

@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { SIGNUP_URL } from "@/lib/site-links";
+import { LAUNCHED, SIGNUP_LABEL, SIGNUP_URL } from "@/lib/site-links";
 import { SplitText } from "./motion";
 import { Reveal } from "./reveal";
 import { SectionContainer } from "./section-container";
@@ -56,10 +56,12 @@ export function OnboardingSection() {
               href={SIGNUP_URL}
               className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-sun hover:text-ink"
             >
-              Start free trial
+              {SIGNUP_LABEL}
               <ArrowRight className="h-4 w-4" />
             </a>
-            <span className="text-sm text-white/70">14 days of the Growth plan. No card required.</span>
+            <span className="text-sm text-white/70">
+              {LAUNCHED ? "14 days of the Growth plan. No card required." : "Early access for the first facilities on the list."}
+            </span>
           </Reveal>
         </SectionContainer>
       </div>

@@ -1,7 +1,7 @@
 import { Instagram, Linkedin } from "lucide-react";
 import { CookiePreferencesLink } from "@/components/CookiePreferencesLink";
 import NewsletterForm from "@/components/NewsletterForm";
-import { APP_URL, DEMO_URL, SIGNUP_URL } from "@/lib/site-links";
+import { APP_URL, DEMO_URL, LAUNCHED, SIGNUP_URL, WAITLIST_URL } from "@/lib/site-links";
 import { SectionContainer } from "./section-container";
 import { BackToTopButton } from "./back-to-top-button";
 import { VitaLinkLogo } from "./vitalink-logo";
@@ -18,12 +18,17 @@ const footerLinks = {
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ],
-  "Get started": [
-    { name: "Start free trial", href: SIGNUP_URL },
-    { name: "Log in", href: APP_URL },
-    { name: "Book a demo", href: DEMO_URL },
-    { name: "Patient app waitlist", href: "/waitlist" },
-  ],
+  "Get started": LAUNCHED
+    ? [
+        { name: "Start free trial", href: SIGNUP_URL },
+        { name: "Log in", href: APP_URL },
+        { name: "Book a demo", href: DEMO_URL },
+        { name: "Patient app waitlist", href: WAITLIST_URL },
+      ]
+    : [
+        { name: "Join waitlist", href: WAITLIST_URL },
+        { name: "Book a demo", href: DEMO_URL },
+      ],
 };
 
 const legalLinks = [
