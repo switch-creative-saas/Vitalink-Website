@@ -1,26 +1,30 @@
 import type { Metadata } from "next";
 import { Navigation } from "@/components/landing/navigation";
 import { HeroSection } from "@/components/landing/hero-section";
-import { FeaturesSection } from "@/components/landing/features-section";
-import { SentinelSection } from "@/components/landing/sentinel-section";
-import { VitamindSection } from "@/components/landing/vitamind-section";
-import { TrustMarquee } from "@/components/landing/trust-marquee";
+import { TrustStrip } from "@/components/landing/trust-strip";
+import { ModulesSection } from "@/components/landing/modules-section";
+import { BentoSection } from "@/components/landing/bento-section";
+import { StatementSection } from "@/components/landing/statement-section";
+import { ProductsSection } from "@/components/landing/products-section";
+import { NumbersSection } from "@/components/landing/numbers-section";
+import { OnboardingSection } from "@/components/landing/onboarding-section";
 import { PricingSection } from "@/components/landing/pricing-section";
-import { TestimonialsSection } from "@/components/landing/testimonials-section";
+import { SupportFaqSection } from "@/components/landing/support-faq-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { FooterSection } from "@/components/landing/footer-section";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "VitaLink | Healthcare Infrastructure Platform for Africa",
+    absolute: "VitaLink | Hospital Management Software for Nigeria",
   },
   description:
-    "VitaLink is building Africa's healthcare operating system — connecting patient identity, EMR, telemedicine, AI-powered clinical intelligence, and public health surveillance into one secure, offline-first platform.",
+    "VitaLink is offline-first hospital management software for Nigeria: patient records, EMR, lab, pharmacy, billing with HMO claims, telemedicine, VitaMind AI, VitaCards and Sentinel disease surveillance.",
   keywords: [
     "VitaLink",
     "healthcare infrastructure Africa",
     "digital health identity",
-    "EMR Africa",
+    "EMR Nigeria",
+    "hospital management software Nigeria",
     "telemedicine Nigeria",
     "healthcare technology Africa",
   ],
@@ -54,7 +58,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-background">
+    <main className="relative min-h-screen overflow-x-clip bg-background">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -76,12 +80,17 @@ export default function Home() {
       />
       <Navigation />
       <HeroSection />
-      <FeaturesSection />
-      <SentinelSection />
-      <VitamindSection />
-      <TrustMarquee />
-      <PricingSection />
-      <TestimonialsSection />
+      <TrustStrip />
+      <ModulesSection />
+      <BentoSection />
+      <StatementSection />
+      <ProductsSection />
+      <NumbersSection />
+      <div className="relative">
+        <OnboardingSection />
+        <PricingSection />
+      </div>
+      <SupportFaqSection />
       <CtaSection />
       <FooterSection />
     </main>

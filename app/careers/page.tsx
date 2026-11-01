@@ -1,452 +1,246 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, HeartPulse, Brain, Zap, GraduationCap, Users, Target, BookOpen, Briefcase, MapPin, Clock, Mail, ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, ArrowUpRight, Brain, Briefcase, Clock, GraduationCap, HeartPulse, MapPin, Target, Zap } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { SectionContainer } from "@/components/landing/section-container";
 import { Navigation } from "@/components/landing/navigation";
 import { FooterSection } from "@/components/landing/footer-section";
-import { GlobeBackground } from "@/components/GlobeBackground";
+import { PageHero, SectionHeading } from "@/components/landing/page-hero";
+import { Reveal } from "@/components/landing/reveal";
+
+const RECRUITMENT_EMAIL = "careers@vitalink.africa";
+
+// Set to true when hiring opens. While false, the roles below stay in the code but aren't shown.
+const HIRING = false;
+const applyLink = (subject: string) => `mailto:${RECRUITMENT_EMAIL}?subject=${encodeURIComponent(subject)}`;
+
+const whyWorkHere = [
+  { title: "Work that matters", description: "Software that hospitals use to treat patients, and that public health teams use to spot outbreaks.", icon: HeartPulse },
+  { title: "Real problems", description: "Offline-first sync, low-data clinics, HMO billing, outbreak signals. Hard problems with real users.", icon: Target },
+  { title: "New ground", description: "On-device record reading, AI clinical support and NFC identity, built for local conditions.", icon: Brain },
+  { title: "Remote-friendly", description: "Flexible working with teammates across Nigeria.", icon: Zap },
+  { title: "Room to grow", description: "Take ownership early and grow with the company.", icon: Briefcase },
+  { title: "Learning", description: "Mentorship, training and time to learn the healthcare side properly.", icon: GraduationCap },
+];
+
+const openPositions = [
+  { title: "Senior Software Engineer", department: "Engineering", location: "Remote (Nigeria)", type: "Full-time" },
+  { title: "Product Manager", department: "Product", location: "Lagos, Nigeria", type: "Full-time" },
+  { title: "Public Health Analyst", department: "Public Health", location: "Abuja, Nigeria", type: "Full-time" },
+  { title: "Clinical Operations Lead", department: "Clinical Operations", location: "Remote (Nigeria)", type: "Full-time" },
+  { title: "Sales Representative", department: "Sales", location: "Lagos, Nigeria", type: "Full-time" },
+  { title: "Customer Success Manager", department: "Customer Success", location: "Remote (Nigeria)", type: "Full-time" },
+];
+
+const internships = [
+  { title: "Public Health Intern", department: "Public Health", location: "Abuja, Nigeria" },
+  { title: "Software Engineering Intern", department: "Engineering", location: "Remote (Nigeria)" },
+  { title: "Product Design Intern", department: "Product", location: "Lagos, Nigeria" },
+  { title: "Data Analyst Intern", department: "Data", location: "Remote (Nigeria)" },
+  { title: "Community Health Intern", department: "Public Health", location: "Abuja, Nigeria" },
+];
+
+const hiringProcess = [
+  { title: "Apply", description: "Send your CV and a short note about why the role interests you." },
+  { title: "Review", description: "The hiring team reads every application." },
+  { title: "Interview", description: "A conversation with the people you'd work with." },
+  { title: "Task", description: "A short, role-specific exercise or case study." },
+  { title: "Offer", description: "We make a decision quickly and tell you either way." },
+];
+
+const departments = ["All", ...Array.from(new Set(openPositions.map((p) => p.department)))];
 
 export default function CareersPage() {
-  const router = useRouter();
-
-  const whyWorkHere = [
-    {
-      title: "Mission-Driven Impact",
-      description: "Build technology that saves lives and improves healthcare across Africa.",
-      icon: HeartPulse,
-    },
-    {
-      title: "Real Healthcare Problems",
-      description: "Work on challenges that matter – from disease surveillance to patient access.",
-      icon: Target,
-    },
-    {
-      title: "Innovation",
-      description: "Build cutting-edge solutions for offline-first, AI-assisted healthcare.",
-      icon: Brain,
-    },
-    {
-      title: "Remote-Friendly",
-      description: "Flexible work arrangements with opportunities across Africa.",
-      icon: Zap,
-    },
-    {
-      title: "Career Growth",
-      description: "Clear progression paths and opportunities to take on new challenges.",
-      icon: Briefcase,
-    },
-    {
-      title: "Learning & Development",
-      description: "Continuous learning opportunities, training, and mentorship programs.",
-      icon: GraduationCap,
-    },
-  ];
-
-  const cultureValues = [
-    "Collaboration",
-    "Ownership",
-    "Integrity",
-    "Continuous Learning",
-    "Patient-First Thinking",
-    "Public Health Impact",
-  ];
-
-  const benefits = [
-    "Flexible Work Arrangements",
-    "Training & Certifications",
-    "Healthcare Industry Exposure",
-    "Mentorship Programs",
-    "Competitive Compensation",
-    "Career Advancement Opportunities",
-  ];
-
-  const departments = [
-    "Engineering",
-    "Product",
-    "Clinical Operations",
-    "Public Health",
-    "Sales",
-    "Customer Success",
-    "Marketing",
-    "Partnerships",
-    "Operations",
-  ];
-
-  const openPositions = [
-    {
-      title: "Senior Software Engineer",
-      department: "Engineering",
-      location: "Remote (Nigeria)",
-      type: "Full-time",
-    },
-    {
-      title: "Product Manager",
-      department: "Product",
-      location: "Lagos, Nigeria",
-      type: "Full-time",
-    },
-    {
-      title: "Public Health Analyst",
-      department: "Public Health",
-      location: "Abuja, Nigeria",
-      type: "Full-time",
-    },
-    {
-      title: "Clinical Operations Lead",
-      department: "Clinical Operations",
-      location: "Remote (Nigeria)",
-      type: "Full-time",
-    },
-    {
-      title: "Sales Representative",
-      department: "Sales",
-      location: "Lagos, Nigeria",
-      type: "Full-time",
-    },
-    {
-      title: "Customer Success Manager",
-      department: "Customer Success",
-      location: "Remote (Nigeria)",
-      type: "Full-time",
-    },
-  ];
-
-  const internships = [
-    {
-      title: "Public Health Intern",
-      department: "Public Health",
-      location: "Abuja, Nigeria",
-      type: "Internship",
-    },
-    {
-      title: "Software Engineering Intern",
-      department: "Engineering",
-      location: "Remote (Nigeria)",
-      type: "Internship",
-    },
-    {
-      title: "Product Design Intern",
-      department: "Product",
-      location: "Lagos, Nigeria",
-      type: "Internship",
-    },
-    {
-      title: "Data Analyst Intern",
-      department: "Data",
-      location: "Remote (Nigeria)",
-      type: "Internship",
-    },
-    {
-      title: "Community Health Intern",
-      department: "Public Health",
-      location: "Abuja, Nigeria",
-      type: "Internship",
-    },
-  ];
-
-  const hiringProcess = [
-    { step: "1", title: "Application", description: "Submit your application through our portal" },
-    { step: "2", title: "Review", description: "Our team reviews your application" },
-    { step: "3", title: "Interview", description: "Initial interviews with the hiring team" },
-    { step: "4", title: "Assessment", description: "Role-specific assessment or case study" },
-    { step: "5", title: "Offer", description: "Welcome to the team!" },
-  ];
+  const [department, setDepartment] = useState("All");
+  const roles = department === "All" ? openPositions : openPositions.filter((p) => p.department === department);
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-white">
+    <main className="relative min-h-screen overflow-x-clip bg-white">
       <Navigation />
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-24">
-        <GlobeBackground />
-        <SectionContainer>
-          <div className="relative z-10 max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-              Help Build Africa's Healthcare Future
-            </h1>
-            <p className="mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-              Join a mission-driven team building healthcare infrastructure that improves lives across Africa.
-            </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 px-8 font-medium"
-                asChild
-              >
-                <a href="#open-positions">View Open Roles</a>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-white border-border text-foreground hover:bg-[#F8FAFC] rounded-xl h-12 px-8 font-medium"
-                asChild
-              >
-                <a href="mailto:careers@vitalink.africa">Contact Recruitment</a>
-              </Button>
-            </div>
-          </div>
-        </SectionContainer>
-      </section>
 
-      {/* Why Work at VitaLink */}
-      <section className="py-20 lg:py-28 bg-white">
+      <PageHero
+        eyebrow="Careers"
+        title="Build the software Nigerian hospitals run on"
+        lead="Join a small team building records, billing, AI support and disease surveillance for care providers who need it to work every day."
+      >
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a
+            href={HIRING ? "#open-positions" : "#hiring-status"}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-white transition-colors hover:bg-brand-deep sm:w-auto"
+          >
+            {HIRING ? "See open roles" : "Hiring status"}
+            <ArrowRight className="h-4 w-4" />
+          </a>
+          <a
+            href={`mailto:${RECRUITMENT_EMAIL}`}
+            className="inline-flex w-full items-center justify-center rounded-full border border-border px-7 py-3.5 text-sm font-medium text-foreground transition-colors hover:border-foreground/30 sm:w-auto"
+          >
+            Contact recruitment
+          </a>
+        </div>
+      </PageHero>
+
+      <section className="bg-white py-14 lg:py-20">
         <SectionContainer>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Why Work at VitaLink
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join a team where your work makes a real difference.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {whyWorkHere.map((item) => (
-              <div
-                key={item.title}
-                className="p-6 bg-[#F8FAFC] border border-border rounded-xl"
-              >
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#7C3AED] flex items-center justify-center mb-4">
-                  <item.icon className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-muted-foreground">
-                  {item.description}
-                </p>
-              </div>
+          <SectionHeading title="Why work at VitaLink" />
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {whyWorkHere.map(({ title, description, icon: Icon }, index) => (
+              <Reveal key={title} delay={index * 70} className="rounded-[1.75rem] bg-surface p-6">
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <h3 className="mt-8 text-xl font-normal tracking-[-0.02em] text-ink">{title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">{description}</p>
+              </Reveal>
             ))}
           </div>
         </SectionContainer>
       </section>
 
-      {/* Our Culture */}
-      <section className="py-20 lg:py-28 bg-[#F8FAFC]">
+      {HIRING ? (
+        <>
+      <section id="open-positions" className="bg-white py-14 lg:py-20">
         <SectionContainer>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Our Culture
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              The values that define how we work together.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {cultureValues.map((value) => (
-              <div
-                key={value}
-                className="p-6 bg-white border border-border rounded-xl text-center"
+          <SectionHeading title="Open roles" lead="Apply by email. We read every application." />
+          <Reveal className="mt-8 flex flex-wrap gap-2">
+            {departments.map((name) => (
+              <button
+                key={name}
+                type="button"
+                aria-pressed={department === name}
+                onClick={() => setDepartment(name)}
+                className={cn(
+                  "rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                  department === name ? "bg-ink text-white" : "bg-surface text-foreground/70 hover:text-foreground"
+                )}
               >
-                <h3 className="text-lg font-semibold text-foreground">
-                  {value}
-                </h3>
-              </div>
+                {name}
+              </button>
             ))}
-          </div>
-        </SectionContainer>
-      </section>
+          </Reveal>
 
-      {/* Benefits */}
-      <section className="py-20 lg:py-28 bg-white">
-        <SectionContainer>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Benefits
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              We invest in our people.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {benefits.map((benefit) => (
-              <div
-                key={benefit}
-                className="p-6 bg-gradient-to-br from-[#2563EB] to-[#7C3AED] rounded-xl"
-              >
-                <p className="text-lg font-semibold text-white">
-                  {benefit}
-                </p>
-              </div>
-            ))}
-          </div>
-        </SectionContainer>
-      </section>
-
-      {/* Open Positions */}
-      <section id="open-positions" className="py-20 lg:py-28 bg-[#F8FAFC]">
-        <SectionContainer>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Open Positions
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Find your next opportunity to make an impact.
-            </p>
-          </div>
-
-          {/* Department Filter */}
-          <div className="flex flex-wrap gap-2 justify-center mb-8">
-            <Button variant="outline" size="sm" className="rounded-full">
-              All Departments
-            </Button>
-            {departments.map((dept) => (
-              <Button key={dept} variant="ghost" size="sm" className="rounded-full">
-                {dept}
-              </Button>
-            ))}
-          </div>
-
-          {/* Job Cards */}
-          <div className="space-y-4">
-            {openPositions.map((position) => (
-              <div
-                key={position.title}
-                className="p-6 bg-white border border-border rounded-xl hover:shadow-md transition-shadow"
-              >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-foreground mb-2">
+          <ul className="mt-8 border-t border-border">
+            {roles.map((position) => (
+              <li key={position.title}>
+                <a
+                  href={applyLink(`Application: ${position.title}`)}
+                  className="group flex flex-col gap-4 border-b border-border py-6 transition-colors md:flex-row md:items-center md:justify-between"
+                >
+                  <div>
+                    <h3 className="text-xl font-normal tracking-[-0.02em] text-ink transition-colors group-hover:text-primary sm:text-2xl">
                       {position.title}
                     </h3>
-                    <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Briefcase className="w-4 h-4" />
-                        {position.department}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
-                        {position.location}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {position.type}
-                      </span>
+                    <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4" />{position.department}</span>
+                      <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" />{position.location}</span>
+                      <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" />{position.type}</span>
                     </div>
                   </div>
-                  <Button className="rounded-xl" asChild>
-                    <a href="mailto:careers@vitalink.africa?subject=Application: {position.title}">
-                      Apply Now
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </SectionContainer>
-      </section>
-
-      {/* Internships */}
-      <section className="py-20 lg:py-28 bg-white">
-        <SectionContainer>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Internships
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Launch your career in healthcare technology.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {internships.map((internship) => (
-              <div
-                key={internship.title}
-                className="p-6 bg-[#F8FAFC] border border-border rounded-xl"
-              >
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {internship.title}
-                </h3>
-                <div className="space-y-1 text-sm text-muted-foreground mb-4">
-                  <p className="flex items-center gap-1">
-                    <Briefcase className="w-4 h-4" />
-                    {internship.department}
-                  </p>
-                  <p className="flex items-center gap-1">
-                    <MapPin className="w-4 h-4" />
-                    {internship.location}
-                  </p>
-                </div>
-                <Button variant="outline" size="sm" className="w-full rounded-xl" asChild>
-                  <a href="mailto:careers@vitalink.africa?subject=Internship Application: {internship.title}">
+                  <span className="inline-flex items-center gap-2 self-start rounded-full bg-surface px-5 py-2.5 text-sm font-medium text-foreground transition-colors group-hover:bg-primary group-hover:text-white md:self-auto">
                     Apply
-                  </a>
-                </Button>
-              </div>
-            ))}
-          </div>
-        </SectionContainer>
-      </section>
-
-      {/* Hiring Process */}
-      <section className="py-20 lg:py-28 bg-[#F8FAFC]">
-        <SectionContainer>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Our Hiring Process
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              What to expect when you apply.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-5 gap-4">
-            {hiringProcess.map((step) => (
-              <div
-                key={step.step}
-                className="p-6 bg-white border border-border rounded-xl text-center"
-              >
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#2563EB] to-[#7C3AED] flex items-center justify-center mx-auto mb-4">
-                  <span className="text-xl font-bold text-white">
-                    {step.step}
+                    <ArrowUpRight className="h-4 w-4" />
                   </span>
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {step.description}
-                </p>
-              </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </SectionContainer>
+      </section>
+
+      <section className="bg-white py-14 lg:py-20">
+        <SectionContainer>
+          <SectionHeading title="Internships" />
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {internships.map((internship, index) => (
+              <Reveal key={internship.title} delay={index * 70}>
+                <a
+                  href={applyLink(`Internship Application: ${internship.title}`)}
+                  className="group flex h-full flex-col justify-between gap-6 rounded-[1.75rem] border border-border p-6 transition-colors hover:border-primary/40"
+                >
+                  <div>
+                    <h3 className="text-lg font-medium text-ink">{internship.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {internship.department} · {internship.location}
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+                    Apply <ArrowUpRight className="h-4 w-4 transition-transform group-hover:rotate-45" />
+                  </span>
+                </a>
+              </Reveal>
             ))}
           </div>
         </SectionContainer>
       </section>
 
-      {/* Diversity Section */}
-      <section className="py-20 lg:py-28 bg-white">
-        <SectionContainer>
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
-              Diversity & Inclusion
-            </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              VitaLink is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We do not discriminate on the basis of race, religion, color, national origin, gender, sexual orientation, age, marital status, veteran status, or disability status.
-            </p>
-          </div>
-        </SectionContainer>
+      <section className="bg-white px-3 py-6 sm:px-6">
+        <Reveal className="relative mx-auto max-w-[1440px] overflow-hidden rounded-[2rem] bg-primary px-6 py-14 text-white sm:px-12 lg:rounded-[2.75rem] lg:px-20 lg:py-20">
+          <h2 className="text-3xl font-normal tracking-[-0.03em] sm:text-4xl lg:text-5xl">How hiring works</h2>
+          <ol className="mt-10 grid gap-4 md:grid-cols-5">
+            {hiringProcess.map((step, index) => (
+              <li key={step.title} className="rounded-[1.5rem] bg-white/10 p-5 ring-1 ring-white/15">
+                <span className="text-4xl font-light tracking-[-0.05em] text-sun">0{index + 1}</span>
+                <h3 className="mt-6 text-lg font-medium">{step.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-white/75">{step.description}</p>
+              </li>
+            ))}
+          </ol>
+        </Reveal>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 lg:py-28 bg-gradient-to-br from-[#2563EB] to-[#7C3AED]">
-        <SectionContainer>
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-              Don't See Your Role?
-            </h2>
-            <p className="text-lg text-white/90 mb-8">
-              We're always looking for talented people to join our team. Send us an open application.
-            </p>
-            <Button
-              size="lg"
-              className="bg-white text-[#2563EB] hover:bg-white/90 rounded-xl h-12 px-8 font-medium"
-              asChild
-            >
-              <a href="mailto:careers@vitalink.africa?subject=Open Application">
-                Send Open Application
+        </>
+      ) : (
+        <section id="hiring-status" className="bg-white px-3 py-6 sm:px-6">
+          <Reveal className="relative mx-auto max-w-[1440px] overflow-hidden rounded-[2rem] bg-primary px-6 py-14 text-white sm:px-12 lg:rounded-[2.75rem] lg:px-20 lg:py-20">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 opacity-[0.1]"
+              style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "28px 28px" }}
+            />
+            <div className="relative max-w-2xl">
+              <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium">No open roles right now</span>
+              <h2 className="mt-6 text-3xl font-normal tracking-[-0.03em] sm:text-4xl lg:text-5xl">We&apos;re not hiring yet</h2>
+              <p className="mt-4 text-base leading-relaxed text-white/80 sm:text-lg">
+                There are no open positions or internships at the moment. When we start hiring, roles will be listed
+                here. You&apos;re welcome to send your CV in the meantime and we&apos;ll keep it on file.
+              </p>
+              <a
+                href={applyLink("CV for future roles")}
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-primary transition-colors hover:bg-sun hover:text-ink"
+              >
+                Send your CV to {RECRUITMENT_EMAIL}
+                <ArrowRight className="h-4 w-4" />
               </a>
-            </Button>
-          </div>
-        </SectionContainer>
-      </section>
+            </div>
+          </Reveal>
+        </section>
+      )}
+
+      {HIRING && (
+        <section className="bg-white py-14 lg:py-20">
+          <SectionContainer className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+            <SectionHeading
+              title="Don't see your role?"
+              lead="Send an open application and tell us what you'd like to work on."
+            />
+            <Reveal className="flex flex-col justify-between gap-8 rounded-[1.75rem] bg-surface p-6 sm:p-8">
+              <p className="text-[15px] leading-relaxed text-muted-foreground">
+                VitaLink is an equal opportunity employer. We do not discriminate on the basis of race, religion, colour, national
+                origin, gender, sexual orientation, age, marital status or disability.
+              </p>
+              <a
+                href={applyLink("Open Application")}
+                className="inline-flex items-center gap-2 self-start rounded-full bg-ink px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-primary"
+              >
+                Send an open application
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </Reveal>
+          </SectionContainer>
+        </section>
+      )}
+
       <FooterSection />
     </main>
   );

@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { APP_URL, SIGNUP_URL } from "@/lib/site-links";
 import { SectionContainer } from "./section-container";
 import { VitaLinkLogo } from "./vitalink-logo";
 
 const navLinks = [
-  { name: "Home", href: "/" },
-  { name: "Features", href: "/#features" },
+  { name: "Product", href: "/#product" },
   { name: "Solutions", href: "/#solutions" },
   { name: "Pricing", href: "/#pricing" },
   { name: "About", href: "/about" },
@@ -44,33 +44,34 @@ export function Navigation() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 60);
+      setIsScrolled(window.scrollY > 24);
     };
 
     handleScroll();
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/90 backdrop-blur-md border-b border-[#8B5CF6]/15"
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        isScrolled || isMobileMenuOpen
+          ? "bg-white/85 backdrop-blur-xl border-b border-black/5"
           : "bg-transparent"
-      }`}
+      )}
     >
-      <SectionContainer as="nav" className="flex items-center justify-between h-16 md:h-[72px]">
+      <SectionContainer as="nav" className="flex items-center justify-between gap-6 h-16 md:h-[76px]">
         <a href="/" className="shrink-0" onClick={closeMenu}>
-          <VitaLinkLogo size="md" />
+          <VitaLinkLogo size="sm" />
         </a>
 
-        <div className="hidden lg:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-1 rounded-full bg-surface p-1">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="rounded-full px-4 py-2 text-[13px] font-medium text-foreground/70 transition-colors hover:bg-white hover:text-foreground"
               onClick={(event) => handleNavClick(event, link.href)}
             >
               {link.name}
@@ -78,47 +79,61 @@ export function Navigation() {
           ))}
         </div>
 
-        <div className="hidden lg:flex items-center shrink-0">
-          <Button
-            size="sm"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 h-10 font-medium"
-            asChild
+        <div className="hidden lg:flex items-center gap-2 shrink-0">
+          <a
+            href={APP_URL}
+            className="px-4 py-2 text-[13px] font-medium text-foreground/80 transition-colors hover:text-foreground"
           >
-            <a href="/waitlist">Join Waitlist</a>
-          </Button>
+            Log in
+          </a>
+          <a
+            href={SIGNUP_URL}
+            className="rounded-full bg-ink px-5 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-primary"
+          >
+            Start free trial
+          </a>
         </div>
 
         <button
           type="button"
-          className="lg:hidden p-2 text-foreground"
+          className="lg:hidden -mr-2 p-2 text-foreground"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isMobileMenuOpen}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </SectionContainer>
 
       {isMobileMenuOpen && (
-        <div className="lg:hidden border-t border-[#8B5CF6]/15 bg-white/95 backdrop-blur-md">
-          <SectionContainer className="py-4 flex flex-col gap-1">
+        <div className="lg:hidden border-t border-black/5 bg-white">
+          <SectionContainer className="py-4 flex flex-col">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="py-3 text-sm font-medium text-foreground hover:text-primary transition-colors"
+                className="py-3 text-base font-medium text-foreground border-b border-black/5"
                 onClick={(event) => handleNavClick(event, link.href)}
               >
                 {link.name}
               </a>
             ))}
-            <Button
-              className="mt-4 w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-11 font-medium"
-              asChild
-            >
-              <a href="/waitlist" onClick={closeMenu}>
-                Join Waitlist
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <a
+                href={APP_URL}
+                onClick={closeMenu}
+                className="rounded-full border border-border py-3 text-center text-sm font-medium text-foreground"
+              >
+                Log in
               </a>
-            </Button>
+              <a
+                href={SIGNUP_URL}
+                onClick={closeMenu}
+                className="rounded-full bg-ink py-3 text-center text-sm font-medium text-white"
+              >
+                Start free trial
+              </a>
+            </div>
           </SectionContainer>
         </div>
       )}

@@ -51,12 +51,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const posts = await getPostsByCategory(slug);
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-white">
+    <main className="relative min-h-screen overflow-x-clip bg-white">
       <Navigation />
       <section className="bg-white pt-28 pb-14 lg:pt-36 lg:pb-20">
         <SectionContainer>
           <div className="max-w-4xl">
-            <Link href="/blog" className="text-sm font-medium text-[#2563EB] hover:underline">
+            <Link href="/blog" className="text-sm font-medium text-primary hover:underline">
               Back to Blog
             </Link>
             <h1 className="mt-5 text-4xl font-bold capitalize text-foreground sm:text-5xl">
@@ -79,7 +79,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         ) : (
           <div className="mx-auto max-w-2xl rounded-xl border border-border bg-white p-8 text-center shadow-sm">
             <p className="mb-4 text-muted-foreground">No articles found in this category.</p>
-            <Link href="/blog" className="font-medium text-[#2563EB] hover:underline">
+            <Link href="/blog" className="font-medium text-primary hover:underline">
               Browse all articles
             </Link>
           </div>

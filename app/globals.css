@@ -10,20 +10,20 @@
   --card-foreground: #0f172a;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --primary: #2563eb;
+  --primary: #1e4ed8;
   --primary-foreground: #ffffff;
   --secondary: #4f46e5;
   --secondary-foreground: #ffffff;
   --muted: #f8fafc;
-  --muted-foreground: #64748b;
+  --muted-foreground: #5b6474;
   --accent: #7c3aed;
   --accent-foreground: #ffffff;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: #ffffff;
   --border: #e2e8f0;
   --input: #f8fafc;
-  --ring: #2563eb;
-  --chart-1: #2563eb;
+  --ring: #1e4ed8;
+  --chart-1: #1e4ed8;
   --chart-2: #4f46e5;
   --chart-3: #7c3aed;
   --chart-4: #64748b;
@@ -31,13 +31,19 @@
   --radius: 1rem;
   --sidebar: #f8fafc;
   --sidebar-foreground: #0f172a;
-  --sidebar-primary: #2563eb;
+  --sidebar-primary: #1e4ed8;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f8fafc;
-  --sidebar-accent-foreground: #2563eb;
+  --sidebar-accent-foreground: #1e4ed8;
   --sidebar-border: #e2e8f0;
-  --sidebar-ring: #2563eb;
-  --surface: #f8fafc;
+  --sidebar-ring: #1e4ed8;
+  --surface: #f4f5f7;
+  --ink: #0b1020;
+  --brand-deep: #13319a;
+  --brand-soft: #e8eefc;
+  --sun: #ffd23f;
+  --rose: #e04aa8;
+  --violet: #6b3fd6;
 }
 
 @theme inline {
@@ -80,6 +86,13 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-soft: var(--brand-soft);
+  --color-sun: var(--sun);
+  --color-rose: var(--rose);
+  --color-violet: var(--violet);
 }
 
 @layer base {
@@ -104,7 +117,7 @@
   }
 
   .text-gradient-brand {
-    @apply bg-gradient-to-r from-[#2563EB] to-[#7C3AED] bg-clip-text text-transparent;
+    @apply bg-primary bg-clip-text text-transparent;
   }
 
   .card-surface {
@@ -150,6 +163,138 @@
   }
 
   .glass-secondary {
-    @apply bg-[#F8FAFC] border border-border shadow-sm;
+    @apply bg-surface border border-border shadow-sm;
+  }
+}
+
+/* Scroll reveal: elements start slightly lowered and fade in once visible. */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Word-by-word statement reveal. */
+.word-reveal > span {
+  opacity: 0.14;
+  transition: opacity 0.5s ease;
+}
+
+.word-reveal > span[data-lit="true"] {
+  opacity: 1;
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes tap-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.animate-tap-ring {
+  animation: tap-ring 2.2s ease-out infinite;
+}
+
+/* Words rise out of a mask (SplitText). */
+.split-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.split-word > span {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.split-text[data-shown="true"] .split-word > span {
+  transform: none;
+}
+
+/* Endless text strip inside the products chip. */
+@keyframes chip-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-chip-marquee {
+  animation: chip-marquee 9s linear infinite;
+}
+
+/* Cursor click ripple in the hero demo. */
+@keyframes cursor-click {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.8);
+    opacity: 0;
+  }
+}
+
+.animate-cursor-click {
+  animation: cursor-click 0.6s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .word-reveal > span {
+    opacity: 1;
+  }
+  .animate-float-slow,
+  .animate-tap-ring,
+  .animate-chip-marquee {
+    animation: none;
+  }
+  .split-word > span {
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
   }
 }

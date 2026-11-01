@@ -1,171 +1,246 @@
 "use client";
 
-import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import TiltCards from "@/components/TiltCards";
+import { useState } from "react";
+import { ArrowRight, Check, Radar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { registerUrl, type PlanId } from "@/lib/site-links";
+import { SplitText } from "./motion";
+import { Reveal } from "./reveal";
 import { SectionContainer } from "./section-container";
 
-const individualBenefits = [
-  "Emergency Access",
-  "Health Records",
-  "Telemedicine",
-  "Insurance Integration",
-  "Secure Identity",
-];
+type Cycle = "monthly" | "annual";
 
-const hospitalPlans = [
+type Plan = {
+  name: string;
+  planId?: PlanId;
+  tagline: string;
+  monthly: number | null;
+  annual: number;
+  note?: string;
+  highlighted?: boolean;
+  features: string[];
+  cta: string;
+  href?: string;
+};
+
+// Prices mirror src/data/pricingTiers.ts in the workspace app.
+// Paid plans link to the app's sign-up with the plan chosen; payment follows once the workspace exists.
+const plans: Plan[] = [
   {
-    name: "Starter",
-    price: "₦25,000",
-    suffix: "/month",
-    popular: false,
-    features: [
-      "Patient Management",
-      "Basic EMR",
-      "Appointments",
-      "Reporting",
-    ],
-    cta: "Start Free",
+    name: "Free",
+    tagline: "To get started",
+    monthly: 0,
+    annual: 0,
+    note: "Free forever",
+    features: ["Up to 2 staff and 50 patients", "Patient registry", "Basic clinical notes", "Appointments"],
+    cta: "Start free",
+    planId: "free",
   },
   {
-    name: "Professional",
-    price: "₦100,000",
-    suffix: "/month",
-    popular: true,
+    name: "Starter",
+    tagline: "Small clinics, 1–2 doctors",
+    monthly: 45000,
+    annual: 450000,
     features: [
-      "Advanced EMR",
-      "Pharmacy",
-      "Laboratory",
-      "Telemedicine",
-      "Billing",
-      "Analytics",
+      "Up to 5 staff and 500 patients",
+      "EMR, appointments and SMS reminders",
+      "Invoicing and receipts",
+      "Pharmacy stock tracking",
+      "Import from paper registers",
     ],
-    cta: "Subscribe Now",
+    cta: "Choose Starter",
+    planId: "starter",
+  },
+  {
+    name: "Growth",
+    tagline: "Hospitals with 3–15 doctors",
+    monthly: 120000,
+    annual: 1200000,
+    highlighted: true,
+    features: [
+      "Up to 20 staff, unlimited patients",
+      "Full EMR, lab and pharmacy",
+      "HMO and insurance claims",
+      "Telemedicine",
+      "VitaMind AI and consultation scribe",
+      "VitaLink Network referrals",
+      "Priority email and WhatsApp support",
+    ],
+    cta: "Choose Growth",
+    planId: "growth",
   },
   {
     name: "Enterprise",
-    price: "Custom Pricing",
-    suffix: "",
-    popular: false,
+    tagline: "Groups, government and NGOs",
+    monthly: null,
+    annual: 3000000,
+    note: "From ₦3,000,000 a year, invoiced annually",
     features: [
-      "Multi-Branch",
-      "Sentinel",
-      "VitaMind AI",
-      "API Access",
-      "Dedicated Support",
-      "Government Integrations",
+      "Unlimited staff",
+      "Multi-facility management",
+      "Full Sentinel surveillance",
+      "Custom integrations",
+      "Dedicated onboarding and training",
+      "SLA and uptime commitments",
     ],
-    cta: "Contact Sales",
+    cta: "Contact sales",
+    href: "/contact",
   },
 ];
 
+const naira = (value: number) => `₦${value.toLocaleString("en-NG")}`;
+
 export function PricingSection() {
+  const [cycle, setCycle] = useState<Cycle>("monthly");
+
   return (
-    <section id="pricing" className="py-20 lg:py-28 bg-[#F8FAFC]">
+    <section id="pricing" className="relative z-10 rounded-t-[2.25rem] bg-white py-14 shadow-[0_-30px_60px_-24px_rgba(11,16,32,0.3)] lg:rounded-t-[3rem] lg:py-24">
       <SectionContainer>
-        {/* Individuals */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center mb-24 min-w-0">
-          <div className="min-w-0">
-            <span className="text-xs font-semibold text-[#2563EB] tracking-widest uppercase">
-              For Individuals
-            </span>
-            <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-foreground tracking-tight text-balance">
-              Join the VitaCard Waitlist
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-              Be among the first to access Africa&apos;s next-generation digital health
-              identity.
-            </p>
-
-            <ul className="mt-8 space-y-3">
-              {individualBenefits.map((benefit) => (
-                <li key={benefit} className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-[#2563EB] shrink-0" />
-                  <span className="text-sm text-foreground">{benefit}</span>
-                </li>
-              ))}
-            </ul>
-
-            <Button
-              className="mt-8 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 px-8 font-medium w-full sm:w-auto"
-              asChild
-            >
-              <a href="/waitlist">Join Waitlist</a>
-            </Button>
-          </div>
-
-          {/* VitaCard card cluster */}
-          <div className="flex justify-center min-w-0">
-            <div className="flex items-center justify-center w-full h-full min-h-[380px]">
-              <TiltCards />
-            </div>
-          </div>
-        </div>
-
-        {/* Hospitals */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-xs font-semibold text-[#2563EB] tracking-widest uppercase">
-            For Hospitals & Institutions
-          </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-bold text-foreground tracking-tight text-balance">
-            Seamless access for healthcare organizations
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Choose the plan that fits your facility. Scale as you grow.
+        <Reveal className="mx-auto max-w-3xl text-center">
+          <SplitText text="Simple pricing in naira" className="text-4xl font-normal leading-[1.08] tracking-[-0.03em] text-ink text-balance sm:text-5xl lg:text-6xl" />
+          <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
+            Pay monthly or yearly through Paystack. Manage your plan from inside your workspace.
           </p>
+
+          <div className="mt-8 inline-flex rounded-full bg-surface p-1" role="group" aria-label="Billing cycle">
+            {(["monthly", "annual"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                aria-pressed={cycle === option}
+                onClick={() => setCycle(option)}
+                className={cn(
+                  "rounded-full px-5 py-2 text-sm font-medium transition-colors",
+                  cycle === option ? "bg-ink text-white" : "text-foreground/70 hover:text-foreground"
+                )}
+              >
+                {option === "monthly" ? "Monthly" : "Yearly · 2 months free"}
+              </button>
+            ))}
+          </div>
+        </Reveal>
+
+        <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {plans.map((plan, index) => {
+            const price =
+              plan.monthly === null
+                ? "Custom"
+                : cycle === "monthly"
+                  ? naira(plan.monthly)
+                  : naira(Math.round(plan.annual / 12));
+            const caption =
+              plan.note ??
+              (cycle === "monthly" ? "per month" : `per month, billed ${naira(plan.annual)} yearly`);
+
+            return (
+              <Reveal
+                key={plan.name}
+                delay={index * 80}
+                className={cn(
+                  "flex flex-col rounded-[2rem] p-7",
+                  plan.highlighted ? "bg-primary text-white" : "bg-surface text-foreground"
+                )}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-xl font-medium">{plan.name}</h3>
+                  {plan.highlighted && (
+                    <span className="rounded-full bg-sun px-3 py-1 text-xs font-medium text-ink">Most chosen</span>
+                  )}
+                </div>
+                <p className={cn("mt-1 text-sm", plan.highlighted ? "text-white/75" : "text-muted-foreground")}>
+                  {plan.tagline}
+                </p>
+
+                <p className="mt-8 text-4xl font-normal tracking-[-0.03em]">{price}</p>
+                <p className={cn("mt-1 min-h-10 text-xs", plan.highlighted ? "text-white/70" : "text-muted-foreground")}>
+                  {caption}
+                </p>
+
+                <ul className="mt-6 flex-1 space-y-3">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2.5 text-sm">
+                      <Check className={cn("mt-0.5 h-4 w-4 shrink-0", plan.highlighted ? "text-sun" : "text-primary")} />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <a
+                  href={plan.planId ? registerUrl(plan.planId, cycle) : plan.href}
+                  className={cn(
+                    "mt-8 rounded-full py-3 text-center text-sm font-medium transition-colors",
+                    plan.highlighted
+                      ? "bg-white text-primary hover:bg-sun hover:text-ink"
+                      : "bg-ink text-white hover:bg-primary"
+                  )}
+                >
+                  {plan.cta}
+                </a>
+                {plan.planId === "growth" && (
+                  <a
+                    href={registerUrl("trial")}
+                    className="mt-3 text-center text-xs text-white/80 underline-offset-4 hover:text-white hover:underline"
+                  >
+                    Or try it free for 14 days, no card needed
+                  </a>
+                )}
+              </Reveal>
+            );
+          })}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 min-w-0">
-          {hospitalPlans.map((plan) => (
-            <div
-              key={plan.name}
-              className={cn(
-                "relative flex flex-col rounded-2xl bg-white border p-6 lg:p-8 min-w-0 h-full",
-                plan.popular
-                  ? "border-[#2563EB] ring-2 ring-[#2563EB] shadow-premium-lg"
-                  : "border-border shadow-sm"
-              )}
-            >
-              {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#2563EB] text-white text-xs font-semibold rounded-full">
-                  Popular
+        <Reveal className="mt-8 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
+          <p className="rounded-2xl border border-border px-5 py-4">
+            <span className="font-medium text-foreground">Sentinel add-on:</span> full surveillance access for Starter
+            and Growth at ₦50,000 a month.
+          </p>
+          <p className="rounded-2xl border border-border px-5 py-4">
+            <span className="font-medium text-foreground">VitaCards:</span> ₦2,500 per card, ordered from your workspace.
+          </p>
+        </Reveal>
+
+        {/* Sentinel registration for organisations: not open yet */}
+        <Reveal className="relative mt-10 overflow-hidden rounded-[2rem] bg-ink p-6 text-white sm:p-10">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full border border-white/10"
+          />
+          <div className="relative grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sun text-ink">
+                  <Radar className="h-5 w-5" />
                 </span>
-              )}
-              <h3 className="text-xl font-semibold text-foreground">{plan.name}</h3>
-              <div className="mt-4 mb-6">
-                <span className="text-3xl font-bold text-foreground break-words">
-                  {plan.price}
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-sun ring-1 ring-sun/30">
+                  Coming soon
                 </span>
-                {plan.suffix && (
-                  <span className="text-muted-foreground text-sm ml-1">{plan.suffix}</span>
-                )}
               </div>
-              <ul className="space-y-3 flex-1 mb-8">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2.5 min-w-0">
-                    <Check className="w-4 h-4 text-[#2563EB] shrink-0 mt-0.5" />
-                    <span className="text-sm text-muted-foreground break-words">
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                className={cn(
-                  "w-full rounded-xl h-11 font-medium",
-                  plan.popular
-                    ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                    : "bg-white border border-border text-foreground hover:bg-[#F8FAFC]"
-                )}
-                variant={plan.popular ? "default" : "outline"}
-                asChild
-              >
-                <a href={plan.cta === "Contact Sales" ? "/contact" : "/waitlist"}>{plan.cta}</a>
-              </Button>
+              <h3 className="mt-6 text-2xl font-normal tracking-[-0.02em] sm:text-3xl">Sentinel for organisations</h3>
+              <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/70">
+                Ministries, state health agencies, NGOs and research teams will be able to register their organisation
+                for VitaLink Sentinel: disease surveillance, case reporting and outbreak alerts.
+              </p>
             </div>
-          ))}
-        </div>
+            <div className="flex flex-col gap-3 lg:items-end">
+              <button
+                type="button"
+                disabled
+                aria-disabled="true"
+                className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-full bg-white/15 px-7 py-3.5 text-sm font-medium text-white/60"
+              >
+                Register your organisation
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <p className="text-sm text-white/60">
+                Registration opens soon.{" "}
+                <a href="/contact" className="text-white underline-offset-4 hover:underline">
+                  Talk to us
+                </a>{" "}
+                in the meantime.
+              </p>
+            </div>
+          </div>
+        </Reveal>
       </SectionContainer>
     </section>
   );

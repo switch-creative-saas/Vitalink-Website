@@ -242,7 +242,7 @@ export function CookieConsent() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="rounded-xl border-border bg-white text-foreground hover:bg-[#F8FAFC]"
+                  className="rounded-xl border-border bg-white text-foreground hover:bg-surface"
                   onClick={rejectNonEssential}
                 >
                   Reject Non-Essential
@@ -281,7 +281,7 @@ export function CookieConsent() {
                   type="button"
                   aria-label="Close cookie preferences"
                   onClick={() => setShowModal(false)}
-                  className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-[#F8FAFC] hover:text-foreground"
+                  className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
                 >
                   <X className="h-5 w-5" />
                 </button>

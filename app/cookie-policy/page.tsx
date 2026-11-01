@@ -36,7 +36,7 @@ const cookieSections = [
 
 export default function CookiePolicyPage() {
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-white">
+    <main className="relative min-h-screen overflow-x-clip bg-white">
       <Navigation />
       <LegalPageLayout
         title="Cookie Policy"
@@ -139,7 +139,7 @@ export default function CookiePolicyPage() {
 
         <section id="contact-information" className="mb-12 scroll-mt-24">
           <h2 className="text-2xl font-bold text-foreground mb-4">13. Contact Information</h2>
-          <div className="bg-[#F8FAFC] border border-border rounded-lg p-6">
+          <div className="bg-surface border border-border rounded-lg p-6">
             <p className="text-muted-foreground mb-2">
               <strong>Email:</strong> privacy@vitalink.africa
             </p>
