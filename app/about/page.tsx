@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { trackDemoClick } from "@/lib/analytics";
-import { DEMO_URL, SIGNUP_URL } from "@/lib/site-links";
+import { DEMO_URL, SIGNUP_LABEL, SIGNUP_URL } from "@/lib/site-links";
 import { SectionContainer } from "@/components/landing/section-container";
 import { Navigation } from "@/components/landing/navigation";
 import { FooterSection } from "@/components/landing/footer-section";
@@ -108,7 +108,7 @@ export default function AboutPage() {
             href={SIGNUP_URL}
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-white transition-colors hover:bg-brand-deep sm:w-auto"
           >
-            Start free trial
+            {SIGNUP_LABEL}
             <ArrowRight className="h-4 w-4" />
           </a>
           <a

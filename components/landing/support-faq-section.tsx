@@ -2,6 +2,7 @@
 
 import { BookOpen, GraduationCap, MessageCircle, Upload } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { LAUNCHED } from "@/lib/site-links";
 import { SplitText } from "./motion";
 import { Reveal } from "./reveal";
 import { SectionContainer } from "./section-container";
@@ -52,7 +53,9 @@ const faqs = [
   },
   {
     q: "Can we try it before paying?",
-    a: "Every new workspace gets 14 days of the Growth plan with no card required. After that you can choose a paid plan or stay on the Free plan.",
+    a: LAUNCHED
+      ? "Every new workspace gets 14 days of the Growth plan with no card required. After that you can choose a paid plan or stay on the Free plan."
+      : "Yes. When we launch, every new workspace will get 14 days of the Growth plan with no card required, and a Free plan after that. Join the waitlist and we'll let you know.",
   },
   {
     q: "Is there an app for patients?",

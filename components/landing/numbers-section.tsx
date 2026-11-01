@@ -2,6 +2,7 @@
 
 import { CalendarCheck, Nfc, Wallet, WifiOff } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LAUNCHED } from "@/lib/site-links";
 import { CountUp } from "./motion";
 import { useInView } from "./reveal";
 import { SectionContainer } from "./section-container";
@@ -117,7 +118,8 @@ export function NumbersSection() {
     <section className="bg-white py-12 lg:py-20">
       <SectionContainer>
         <ul className="border-t border-border">
-          {rows.map((row) => (
+          {/* The trial row only makes sense once sign-up is open. */}
+          {rows.filter((row) => LAUNCHED || row.label !== "14 days").map((row) => (
             <NumberRow key={row.label} row={row} />
           ))}
         </ul>

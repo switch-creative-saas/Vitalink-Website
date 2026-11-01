@@ -1,20 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, CheckCircle2, Shield, Smartphone, Wallet } from "lucide-react";
+import { ArrowRight, Building2, CheckCircle2, Nfc, Shield, Smartphone, Wallet } from "lucide-react";
 import { SectionContainer } from "@/components/landing/section-container";
 import { Navigation } from "@/components/landing/navigation";
 import { FooterSection } from "@/components/landing/footer-section";
 import { PageHero } from "@/components/landing/page-hero";
 import { Reveal } from "@/components/landing/reveal";
-import { SIGNUP_URL } from "@/lib/site-links";
+import { DEMO_URL, LAUNCHED, SIGNUP_URL } from "@/lib/site-links";
 import { trackEvent } from "@/lib/analytics";
 
-const planned = [
-  { title: "Your records in one place", body: "Visits, results and prescriptions from VitaLink hospitals.", icon: Smartphone },
-  { title: "Health wallet", body: "Save towards care and pay hospital bills from your phone.", icon: Wallet },
-  { title: "Micro-insurance", body: "Simple cover options, in development.", icon: Shield },
-];
+// After launch this page is only for the patient app; before launch it is the waitlist for everything.
+const planned = LAUNCHED
+  ? [
+      { title: "Your records in one place", body: "Visits, results and prescriptions from VitaLink hospitals.", icon: Smartphone },
+      { title: "Health wallet", body: "Save towards care and pay hospital bills from your phone.", icon: Wallet },
+      { title: "Micro-insurance", body: "Simple cover options, in development.", icon: Shield },
+    ]
+  : [
+      { title: "Hospital workspace", body: "Records, EMR, lab, pharmacy, billing and HMO claims for your facility.", icon: Building2 },
+      { title: "VitaCards", body: "NFC cards that open a patient's emergency profile on any phone.", icon: Nfc },
+      { title: "Patient app (later)", body: "Records, a health wallet and simple cover for patients.", icon: Smartphone },
+    ];
 
 export default function WaitlistPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -42,7 +49,11 @@ export default function WaitlistPage() {
         <PageHero
           eyebrow="Waitlist"
           title="You're on the list"
-          lead="Thank you. We'll email you when the patient app is ready, and before then if there's a pilot near you."
+          lead={
+            LAUNCHED
+              ? "Thank you. We'll email you when the patient app is ready, and before then if there's a pilot near you."
+              : "Thank you. We'll be in touch with early access as we open VitaLink to more facilities."
+          }
         >
           <div className="flex flex-col items-center gap-6">
             <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-white">
@@ -60,9 +71,13 @@ export default function WaitlistPage() {
       ) : (
         <>
           <PageHero
-            eyebrow="Patient app · coming later"
-            title="Join the patient app waitlist"
-            lead="We're building an app for patients to carry their records, pay for care and get simple cover. It isn't available yet. Join the list to hear first."
+            eyebrow={LAUNCHED ? "Patient app · coming later" : "Early access"}
+            title={LAUNCHED ? "Join the patient app waitlist" : "Join the VitaLink waitlist"}
+            lead={
+              LAUNCHED
+                ? "We're building an app for patients to carry their records, pay for care and get simple cover. It isn't available yet. Join the list to hear first."
+                : "We're onboarding our first hospitals and clinics. Join the list for early access, and to hear first when VitaLink opens to everyone."
+            }
           />
 
           <section className="bg-white pb-14 lg:pb-20">
@@ -80,9 +95,13 @@ export default function WaitlistPage() {
                   </Reveal>
                 ))}
                 <Reveal delay={300} className="rounded-[1.5rem] bg-primary p-5 text-white">
-                  <p className="text-sm text-white/80">Run a hospital or clinic?</p>
-                  <a href={SIGNUP_URL} className="mt-1 inline-flex items-center gap-2 text-lg font-medium">
-                    The workspace is available now <ArrowRight className="h-4 w-4" />
+                  <p className="text-sm text-white/80">{LAUNCHED ? "Run a hospital or clinic?" : "Want to see it first?"}</p>
+                  <a
+                    href={LAUNCHED ? SIGNUP_URL : DEMO_URL}
+                    {...(LAUNCHED ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+                    className="mt-1 inline-flex items-center gap-2 text-lg font-medium"
+                  >
+                    {LAUNCHED ? "The workspace is available now" : "Book a demo"} <ArrowRight className="h-4 w-4" />
                   </a>
                 </Reveal>
               </div>
@@ -94,7 +113,7 @@ export default function WaitlistPage() {
                   frameBorder="0"
                   marginHeight={0}
                   marginWidth={0}
-                  title="VitaLink patient app waitlist form"
+                  title="VitaLink waitlist form"
                   style={{ minHeight: "600px", border: "none" }}
                 />
                 <p className="mt-4 text-center text-xs text-muted-foreground">

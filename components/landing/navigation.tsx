@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { APP_URL, SIGNUP_URL } from "@/lib/site-links";
+import { APP_URL, LAUNCHED, SIGNUP_LABEL, SIGNUP_URL } from "@/lib/site-links";
 import { SectionContainer } from "./section-container";
 import { VitaLinkLogo } from "./vitalink-logo";
 
@@ -80,17 +80,19 @@ export function Navigation() {
         </div>
 
         <div className="hidden lg:flex items-center gap-2 shrink-0">
-          <a
-            href={APP_URL}
-            className="px-4 py-2 text-[13px] font-medium text-foreground/80 transition-colors hover:text-foreground"
-          >
-            Log in
-          </a>
+          {LAUNCHED && (
+            <a
+              href={APP_URL}
+              className="px-4 py-2 text-[13px] font-medium text-foreground/80 transition-colors hover:text-foreground"
+            >
+              Log in
+            </a>
+          )}
           <a
             href={SIGNUP_URL}
             className="rounded-full bg-ink px-5 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-primary"
           >
-            Start free trial
+            {SIGNUP_LABEL}
           </a>
         </div>
 
@@ -118,20 +120,22 @@ export function Navigation() {
                 {link.name}
               </a>
             ))}
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <a
-                href={APP_URL}
-                onClick={closeMenu}
-                className="rounded-full border border-border py-3 text-center text-sm font-medium text-foreground"
-              >
-                Log in
-              </a>
+            <div className={cn("mt-5 grid gap-3", LAUNCHED && "grid-cols-2")}>
+              {LAUNCHED && (
+                <a
+                  href={APP_URL}
+                  onClick={closeMenu}
+                  className="rounded-full border border-border py-3 text-center text-sm font-medium text-foreground"
+                >
+                  Log in
+                </a>
+              )}
               <a
                 href={SIGNUP_URL}
                 onClick={closeMenu}
                 className="rounded-full bg-ink py-3 text-center text-sm font-medium text-white"
               >
-                Start free trial
+                {SIGNUP_LABEL}
               </a>
             </div>
           </SectionContainer>

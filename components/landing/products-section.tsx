@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, LayoutDashboard, Nfc, Radar } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { APP_URL } from "@/lib/site-links";
+import { APP_URL, LAUNCHED } from "@/lib/site-links";
 import { SplitText, useScrollVars } from "./motion";
 import { SectionContainer } from "./section-container";
 
@@ -27,8 +27,8 @@ const products: Product[] = [
     name: "Workspace",
     lead: "Run the facility",
     body: "Records, EMR, lab, pharmacy, billing, telemedicine and VitaMind AI for your whole team.",
-    href: APP_URL,
-    domain: "app.vitalink.africa",
+    href: LAUNCHED ? APP_URL : undefined,
+    domain: LAUNCHED ? "app.vitalink.africa" : undefined,
     icon: LayoutDashboard,
     tone: "bg-primary text-white",
     offset: "lg:mt-16",

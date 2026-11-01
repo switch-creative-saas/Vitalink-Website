@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { trackDemoClick } from "@/lib/analytics";
-import { DEMO_URL, SIGNUP_URL } from "@/lib/site-links";
+import { DEMO_URL, LAUNCHED, SIGNUP_LABEL, SIGNUP_URL } from "@/lib/site-links";
 import { clamp, easeInOut, onScrollFrame, prefersReducedMotion } from "./motion";
 import { SectionContainer } from "./section-container";
 import { WorkspaceMockup, type MockupView } from "./workspace-mockup";
@@ -162,7 +162,7 @@ export function HeroSection() {
                   href={SIGNUP_URL}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-white transition-colors hover:bg-brand-deep sm:w-auto"
                 >
-                  Start 14-day free trial
+                  {LAUNCHED ? "Start 14-day free trial" : SIGNUP_LABEL}
                   <ArrowRight className="h-4 w-4" />
                 </a>
                 <a
@@ -175,7 +175,11 @@ export function HeroSection() {
                   Book a demo
                 </a>
               </div>
-              <p className="mt-4 text-xs text-muted-foreground">No card required. Free plan available after the trial.</p>
+              <p className="mt-4 text-xs text-muted-foreground">
+                {LAUNCHED
+                  ? "No card required. Free plan available after the trial."
+                  : "We're onboarding our first facilities. Join the waitlist for early access."}
+              </p>
             </div>
           </SectionContainer>
 
