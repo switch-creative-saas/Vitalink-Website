@@ -1,37 +1,36 @@
 import { Instagram, Linkedin } from "lucide-react";
 import { CookiePreferencesLink } from "@/components/CookiePreferencesLink";
 import NewsletterForm from "@/components/NewsletterForm";
+import { APP_URL, DEMO_URL, SIGNUP_URL } from "@/lib/site-links";
 import { SectionContainer } from "./section-container";
 import { BackToTopButton } from "./back-to-top-button";
 import { VitaLinkLogo } from "./vitalink-logo";
 
 const footerLinks = {
-  Company: [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
+  Product: [
+    { name: "Workspace", href: "/#product" },
     { name: "Pricing", href: "/#pricing" },
+    { name: "FAQ", href: "/#faq" },
+  ],
+  Company: [
+    { name: "About", href: "/about" },
     { name: "Careers", href: "/careers" },
-    { name: "Contact", href: "/contact" },
     { name: "Blog", href: "/blog" },
+    { name: "Contact", href: "/contact" },
   ],
-  Platform: [
-    { name: "VitaCard", href: "#features" },
-    { name: "Patient App", href: "#features" },
-    { name: "VitaMind AI", href: "#vitamind" },
-    { name: "VitaLink Sentinel", href: "#solutions" },
-  ],
-  Solutions: [
-    { name: "Hospitals", href: "#pricing" },
-    { name: "NGOs", href: "#solutions" },
-    { name: "Government", href: "#solutions" },
-    { name: "Public Health", href: "#solutions" },
-  ],
-  Legal: [
-    { name: "Privacy Policy", href: "/privacy" },
-    { name: "Cookie Policy", href: "/cookie-policy" },
-    { name: "Terms of Service", href: "/terms" },
+  "Get started": [
+    { name: "Start free trial", href: SIGNUP_URL },
+    { name: "Log in", href: APP_URL },
+    { name: "Book a demo", href: DEMO_URL },
+    { name: "Patient app waitlist", href: "/waitlist" },
   ],
 };
+
+const legalLinks = [
+  { name: "Privacy Policy", href: "/privacy" },
+  { name: "Cookie Policy", href: "/cookie-policy" },
+  { name: "Terms of Service", href: "/terms" },
+];
 
 const socialLinks = [
   { name: "LinkedIn", href: "https://www.linkedin.com/company/vitalink-africa", icon: Linkedin },
@@ -43,74 +42,36 @@ const socialLinks = [
 ];
 
 export function FooterSection() {
-  const { Legal, ...mainFooterLinks } = footerLinks;
-
   return (
-    <footer className="relative overflow-hidden bg-white border-t border-border">
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_18%_18%,rgba(124,58,237,0.08),transparent_28%),radial-gradient(circle_at_82%_10%,rgba(37,99,235,0.08),transparent_24%)]" />
-
-      <SectionContainer className="relative py-12 sm:py-14 lg:py-16">
-        <div className="flex flex-col gap-5 border-b border-border pb-8 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
-          <a href="/" className="inline-block">
-            <VitaLinkLogo size="md" />
-          </a>
-          <p className="max-w-sm text-left md:text-center">
-            Connecting Healthcare Across Africa.
-          </p>
-          <p className="md:text-right">&copy; VitaLink 2026.</p>
-        </div>
-
-        <div className="grid gap-10 py-10 lg:grid-cols-[minmax(280px,420px)_1fr] lg:gap-14 xl:gap-20">
+    <footer className="bg-white">
+      <SectionContainer className="pt-16 pb-10 lg:pt-24">
+        <div className="grid gap-12 lg:grid-cols-[1.1fr_1.6fr] lg:gap-20">
           <div className="min-w-0">
-            <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#312e81] p-5 text-white shadow-2xl shadow-indigo-950/15 sm:p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/15 bg-white/10">
-                  <VitaLinkLogo showText={false} size="lg" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-100">
-                    Newsletter
-                  </p>
-                  <h2 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                    Get VitaLink updates
-                  </h2>
-                  <p className="mt-2 text-sm leading-relaxed text-blue-100">
-                    Africa&apos;s offline-first healthcare infrastructure connecting patients,
-                    hospitals, and public health systems.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <NewsletterForm variant="blog" placeholder="Your email address" />
+            <a href="/" className="inline-block">
+              <VitaLinkLogo size="sm" />
+            </a>
+            <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-muted-foreground">
+              Hospital management, patient identity and disease surveillance for healthcare in Nigeria.
+            </p>
+            <div className="mt-8 rounded-[1.75rem] bg-surface p-5 sm:p-6">
+              <p className="text-sm font-medium text-ink">Product updates by email</p>
+              <p className="mt-1 text-sm text-muted-foreground">New features and guides, about once a month.</p>
+              <div className="mt-4">
+                <NewsletterForm variant="inline" placeholder="Your email address" />
               </div>
             </div>
           </div>
 
-          <div className="grid min-w-0 gap-8 sm:grid-cols-2 lg:grid-cols-5">
-            <div className="min-w-0">
-              <h3 className="text-sm font-semibold text-foreground mb-4">Contact</h3>
-              <ul className="space-y-3">
-                <li>
-                  <a
-                    href="mailto:hello@vitalink.africa"
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors break-words"
-                  >
-                    hello@vitalink.africa
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {Object.entries(mainFooterLinks).map(([title, links]) => (
+          <div className="grid min-w-0 grid-cols-2 gap-8 sm:grid-cols-4">
+            {Object.entries(footerLinks).map(([title, links]) => (
               <div key={title} className="min-w-0">
-                <h3 className="text-sm font-semibold text-foreground mb-4">{title}</h3>
-                <ul className="space-y-3">
+                <h3 className="text-sm font-medium text-ink">{title}</h3>
+                <ul className="mt-4 space-y-3">
                   {links.map((link) => (
                     <li key={link.name}>
                       <a
                         href={link.href}
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors break-words"
+                        className="text-sm text-muted-foreground transition-colors hover:text-primary"
                       >
                         {link.name}
                       </a>
@@ -121,8 +82,18 @@ export function FooterSection() {
             ))}
 
             <div className="min-w-0">
-              <h3 className="text-sm font-semibold text-foreground mb-4">Social</h3>
-              <div className="flex flex-wrap gap-3">
+              <h3 className="text-sm font-medium text-ink">Contact</h3>
+              <ul className="mt-4 space-y-3">
+                <li>
+                  <a
+                    href="mailto:hello@vitalink.africa"
+                    className="break-words text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    hello@vitalink.africa
+                  </a>
+                </li>
+              </ul>
+              <div className="mt-5 flex gap-2">
                 {socialLinks.map(({ name, href, icon: Icon }) => (
                   <a
                     key={name}
@@ -130,7 +101,7 @@ export function FooterSection() {
                     aria-label={name}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-indigo-100 bg-white/75 text-[#4338CA] shadow-sm backdrop-blur-sm transition-colors hover:border-[#2563EB]/40 hover:bg-[#EEF2FF] hover:text-[#2563EB]"
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-surface text-foreground/70 transition-colors hover:bg-primary hover:text-white"
                   >
                     <Icon className="h-4 w-4" />
                   </a>
@@ -140,32 +111,21 @@ export function FooterSection() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-border py-6">
-          {Legal.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {link.name}
-            </a>
-          ))}
-          <CookiePreferencesLink className="text-left text-sm text-muted-foreground hover:text-foreground transition-colors" />
-        </div>
-
-        <div className="select-none border-y border-border py-8 sm:py-10">
-          <p className="text-[clamp(4.5rem,18vw,15rem)] font-black leading-[0.78] tracking-tight text-indigo-950">
+        <div className="mt-16 select-none overflow-hidden" aria-hidden="true">
+          <p className="text-[clamp(4rem,19vw,17rem)] font-normal leading-[0.8] tracking-[-0.06em] text-primary">
             VitaLink
           </p>
         </div>
 
-        <div className="flex flex-col justify-between gap-4 pt-8 text-sm text-muted-foreground sm:flex-row sm:items-center">
-          <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
-            <p>&copy; VitaLink 2026.</p>
-            <span className="hidden sm:inline" aria-hidden="true">
-              /
-            </span>
-            <p>Connecting Healthcare Across Africa.</p>
+        <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6 text-sm text-muted-foreground lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <p>&copy; {new Date().getFullYear()} VitaLink</p>
+            {legalLinks.map((link) => (
+              <a key={link.name} href={link.href} className="transition-colors hover:text-foreground">
+                {link.name}
+              </a>
+            ))}
+            <CookiePreferencesLink className="text-left text-sm text-muted-foreground transition-colors hover:text-foreground" />
           </div>
           <BackToTopButton />
         </div>

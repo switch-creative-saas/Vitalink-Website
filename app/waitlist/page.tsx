@@ -1,32 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, CheckCircle2, Shield, Smartphone, Wallet } from "lucide-react";
 import { SectionContainer } from "@/components/landing/section-container";
 import { Navigation } from "@/components/landing/navigation";
 import { FooterSection } from "@/components/landing/footer-section";
-import { VitaLinkLogo } from "@/components/landing/vitalink-logo";
-import { GlobeBackground } from "@/components/GlobeBackground";
+import { PageHero } from "@/components/landing/page-hero";
+import { Reveal } from "@/components/landing/reveal";
+import { SIGNUP_URL } from "@/lib/site-links";
 import { trackEvent } from "@/lib/analytics";
 
+const planned = [
+  { title: "Your records in one place", body: "Visits, results and prescriptions from VitaLink hospitals.", icon: Smartphone },
+  { title: "Health wallet", body: "Save towards care and pay hospital bills from your phone.", icon: Wallet },
+  { title: "Micro-insurance", body: "Simple cover options, in development.", icon: Shield },
+];
+
 export default function WaitlistPage() {
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    // Track page view
     trackEvent("waitlist_page_view");
 
-    // Listen for Tally form submission
+    // The embedded Tally form posts this message when it is submitted.
     const handleMessage = (event: MessageEvent) => {
       if (event.data === "Tally.FormSubmitted") {
-        setShowSuccess(true);
-        setShowConfetti(true);
-        // Track form submission
+        setSubmitted(true);
         trackEvent("waitlist_form_submitted");
-        // Hide confetti after 5 seconds
-        setTimeout(() => setShowConfetti(false), 5000);
       }
     };
 
@@ -34,159 +34,80 @@ export default function WaitlistPage() {
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 
-  if (showSuccess) {
-    return (
-      <main className="relative min-h-screen overflow-x-hidden bg-white">
-        <Navigation />
-        <section className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-24 min-h-[72vh] flex items-center">
-          <GlobeBackground />
-          <SectionContainer>
-            <div className="relative z-10 max-w-2xl mx-auto text-center">
-          {/* Confetti Animation */}
-          {showConfetti && (
-            <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
-              {[...Array(50)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-2 h-2 rounded-full animate-float"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    backgroundColor: ['#2563EB', '#7C3AED', '#10B981', '#F59E0B', '#EF4444'][Math.floor(Math.random() * 5)],
-                    animationDelay: `${Math.random() * 2}s`,
-                    animationDuration: `${3 + Math.random() * 2}s`,
-                  }}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Success Icon */}
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#2563EB] to-[#7C3AED] flex items-center justify-center mx-auto mb-8">
-            <CheckCircle2 className="w-10 h-10 text-white" />
-          </div>
-
-          {/* Logo */}
-          <VitaLinkLogo size="lg" className="justify-center mb-8" />
-
-          {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
-            You're on the list 🎉
-          </h1>
-
-          {/* Message */}
-          <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-xl mx-auto">
-            Thank you for joining the VitaLink waitlist. You'll be among the first to receive updates, early access opportunities, pilot programs, and launch announcements.
-          </p>
-
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-[#2563EB] hover:bg-[#2563EB]/90 text-white rounded-xl h-12 px-8 font-medium"
-              asChild
-            >
-              <a href="/">Return Home</a>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-[#2563EB] text-[#2563EB] hover:bg-[#2563EB]/10 rounded-xl h-12 px-8 font-medium"
-              asChild
-            >
-              <a
-                href="https://calendar.app.google/mpgibQjd3RzayAvx9"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Request Demo
-              </a>
-            </Button>
-            <Button
-              size="lg"
-              variant="ghost"
-              className="text-foreground hover:bg-[#F8FAFC] rounded-xl h-12 px-8 font-medium"
-              asChild
-            >
-              <a href="/about">Learn More</a>
-            </Button>
-          </div>
-            </div>
-          </SectionContainer>
-        </section>
-        <FooterSection />
-
-        <style jsx global>{`
-          @keyframes float {
-            0% {
-              transform: translateY(0) rotate(0deg);
-              opacity: 1;
-            }
-            100% {
-              transform: translateY(-100vh) rotate(720deg);
-              opacity: 0;
-            }
-          }
-
-          .animate-float {
-            animation: float linear forwards;
-          }
-        `}</style>
-      </main>
-    );
-  }
-
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-white">
+    <main className="relative min-h-screen overflow-x-clip bg-white">
       <Navigation />
-      <section className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-24">
-        <GlobeBackground />
-        <SectionContainer>
-          <div className="relative z-10 max-w-4xl mx-auto text-center">
-            <span className="inline-flex items-center rounded-full bg-white/85 border border-[#8B5CF6]/15 px-4 py-2 text-sm font-semibold text-primary shadow-sm">
-              VitaLink Waitlist
+
+      {submitted ? (
+        <PageHero
+          eyebrow="Waitlist"
+          title="You're on the list"
+          lead="Thank you. We'll email you when the patient app is ready, and before then if there's a pilot near you."
+        >
+          <div className="flex flex-col items-center gap-6">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-white">
+              <CheckCircle2 className="h-8 w-8" />
             </span>
-            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground tracking-tight text-balance">
-              Join the VitaLink Waitlist
-            </h1>
-            <p className="mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Be among the first to experience Africa's next-generation healthcare infrastructure.
-            </p>
+            <a
+              href="/"
+              className="inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-medium text-white transition-colors hover:bg-primary"
+            >
+              Back to home
+              <ArrowRight className="h-4 w-4" />
+            </a>
           </div>
-        </SectionContainer>
-      </section>
+        </PageHero>
+      ) : (
+        <>
+          <PageHero
+            eyebrow="Patient app · coming later"
+            title="Join the patient app waitlist"
+            lead="We're building an app for patients to carry their records, pay for care and get simple cover. It isn't available yet. Join the list to hear first."
+          />
 
-      <SectionContainer className="py-14 lg:py-20">
-        <div className="max-w-4xl mx-auto">
-          {/* Tally Form Container */}
-          <div className="bg-white rounded-[20px] shadow-lg border border-border p-6 sm:p-8 max-w-[800px] mx-auto">
-            <div className="w-full" style={{ minHeight: "600px" }}>
-              <iframe
-                src="https://tally.so/embed/D4apVE?alignLeft=1&hideTitle=1&transparentBackground=1"
-                width="100%"
-                height="100%"
-                frameBorder="0"
-                marginHeight={0}
-                marginWidth={0}
-                title="VitaLink Waitlist Form"
-                className="rounded-lg"
-                style={{
-                  minHeight: "600px",
-                  border: "none",
-                }}
-              />
-            </div>
-          </div>
+          <section className="bg-white pb-14 lg:pb-20">
+            <SectionContainer className="grid gap-8 lg:grid-cols-[1fr_1.3fr] lg:gap-12">
+              <div className="space-y-3">
+                {planned.map(({ title, body, icon: Icon }, index) => (
+                  <Reveal key={title} delay={index * 90} className="flex items-start gap-4 rounded-[1.5rem] bg-surface p-5">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <h2 className="text-lg font-medium text-ink">{title}</h2>
+                      <p className="mt-1 text-[15px] leading-relaxed text-muted-foreground">{body}</p>
+                    </div>
+                  </Reveal>
+                ))}
+                <Reveal delay={300} className="rounded-[1.5rem] bg-primary p-5 text-white">
+                  <p className="text-sm text-white/80">Run a hospital or clinic?</p>
+                  <a href={SIGNUP_URL} className="mt-1 inline-flex items-center gap-2 text-lg font-medium">
+                    The workspace is available now <ArrowRight className="h-4 w-4" />
+                  </a>
+                </Reveal>
+              </div>
 
-          {/* Additional Info */}
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            <p>By joining the waitlist, you agree to receive updates from VitaLink.</p>
-            <p className="mt-2">
-              Read our <a href="/privacy" className="text-[#2563EB] hover:underline">Privacy Policy</a> and <a href="/terms" className="text-[#2563EB] hover:underline">Terms of Use</a>.
-            </p>
-          </div>
-        </div>
-      </SectionContainer>
+              <Reveal delay={150} className="rounded-[2rem] border border-border bg-white p-4 sm:p-6">
+                <iframe
+                  src="https://tally.so/embed/D4apVE?alignLeft=1&hideTitle=1&transparentBackground=1"
+                  width="100%"
+                  frameBorder="0"
+                  marginHeight={0}
+                  marginWidth={0}
+                  title="VitaLink patient app waitlist form"
+                  style={{ minHeight: "600px", border: "none" }}
+                />
+                <p className="mt-4 text-center text-xs text-muted-foreground">
+                  By joining you agree to receive updates from VitaLink. Read our{" "}
+                  <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a> and{" "}
+                  <a href="/terms" className="text-primary hover:underline">Terms</a>.
+                </p>
+              </Reveal>
+            </SectionContainer>
+          </section>
+        </>
+      )}
+
       <FooterSection />
     </main>
   );

@@ -1,68 +1,62 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { SectionContainer } from "./section-container";
-import { VitaCardMockup } from "./vita-card-mockup";
+import { ArrowRight, Nfc } from "lucide-react";
 import { trackDemoClick } from "@/lib/analytics";
+import { DEMO_URL, SIGNUP_URL } from "@/lib/site-links";
+import { SplitText, useScrollVars } from "./motion";
 
 export function CtaSection() {
+  const panelRef = useScrollVars<HTMLDivElement>();
+
   return (
-    <section
-      id="waitlist"
-      className="relative py-20 lg:py-28 overflow-hidden bg-[#1e3a8a]"
-      aria-labelledby="waitlist-heading"
-    >
+    <section className="bg-white px-3 pb-8 pt-4 sm:px-6" aria-labelledby="cta-heading">
       <div
-        className="absolute inset-0 opacity-10 pointer-events-none"
-        style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-          backgroundSize: "32px 32px",
-        }}
-      />
-
-      <SectionContainer className="relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center min-w-0">
-          <div className="min-w-0">
-            <h2
-              id="waitlist-heading"
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight text-balance"
-            >
-              One Tap. Critical Records.
-            </h2>
-            <p className="mt-4 text-lg text-blue-100 leading-relaxed max-w-lg">
-              Join healthcare innovators building Africa&apos;s connected health
-              infrastructure. Be first to access VitaLink.
-            </p>
-
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 max-w-md">
-              <Button
-                className="h-12 px-6 rounded-xl bg-white text-[#1e3a8a] hover:bg-blue-50 font-semibold shrink-0 w-full sm:w-auto"
-                asChild
-              >
-                <a href="/waitlist">
-                  Join Waitlist
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </a>
-              </Button>
+        ref={panelRef}
+        className="relative mx-auto max-w-[1280px] overflow-hidden rounded-[2rem] bg-[#4a6ae0] lg:rounded-[2.75rem]"
+        style={{ transform: "scale(calc(0.86 + var(--enter-eased, 1) * 0.14))", transformOrigin: "50% 100%" }}
+      >
+        <div className="grid items-center gap-10 px-6 py-14 sm:px-12 lg:grid-cols-[1.1fr_1fr] lg:px-20 lg:py-20">
+          <div className="text-center lg:text-left">
+            <SplitText id="cta-heading" text="Give your team one place to care for every patient" className="text-4xl font-normal leading-[1.08] tracking-[-0.03em] text-white text-balance sm:text-5xl lg:text-[3.5rem]" />
+            <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row lg:justify-start sm:justify-center">
               <a
-                href="https://calendar.app.google/mpgibQjd3RzayAvx9"
+                href={SIGNUP_URL}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-sun hover:text-ink sm:w-auto"
+              >
+                Start free trial
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <a
+                href={DEMO_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-indigo-600 bg-white border-2 border-white hover:bg-indigo-50 hover:border-indigo-100 transition-all duration-200 text-sm"
                 onClick={() => trackDemoClick("cta_section")}
+                className="inline-flex w-full items-center justify-center rounded-full border border-white/60 px-7 py-3.5 text-sm font-medium text-white transition-colors hover:bg-white/10 sm:w-auto"
               >
-                Request Demo
+                Book a demo
               </a>
             </div>
-
           </div>
 
-          <div className="hidden sm:flex justify-center lg:justify-end min-w-0">
-            <VitaCardMockup className="opacity-95" />
+          <div className="relative mx-auto hidden h-72 w-full max-w-sm sm:block" aria-hidden="true">
+            <div className="absolute right-6 top-2 h-16 w-16 rounded-full bg-sun" />
+            <div className="absolute left-4 top-16 h-44 w-72 -rotate-[10deg] rounded-3xl bg-primary shadow-2xl" />
+            <div className="absolute left-14 top-10 flex h-44 w-72 rotate-[4deg] animate-float-slow flex-col justify-between rounded-3xl bg-white p-6 shadow-2xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <img src="/logo.png" alt="" className="h-6 w-6" />
+                  <span className="text-sm font-semibold text-ink">VitaCard</span>
+                </div>
+                <Nfc className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-lg font-medium text-ink">Emergency profile</p>
+                <p className="text-xs text-muted-foreground">Tap any NFC phone · PIN for full record</p>
+              </div>
+            </div>
           </div>
         </div>
-      </SectionContainer>
+      </div>
     </section>
   );
 }

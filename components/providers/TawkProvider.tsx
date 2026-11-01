@@ -17,8 +17,10 @@ const tawkInitScript = `
         typeof message === "string" &&
         message.indexOf("i18next is not a function") !== -1 &&
         (!filename || filename.indexOf("tawk.to") !== -1 || filename.indexOf("embed.tawk.to") !== -1);
+      // Errors thrown inside Tawk's own scripts (e.g. its chat sound failing to download on a bad connection).
+      var isTawkScriptError = typeof filename === "string" && filename.indexOf("tawk.to") !== -1;
 
-      if (isTawkI18nError) {
+      if (isTawkI18nError || isTawkScriptError) {
         event.preventDefault();
         event.stopImmediatePropagation();
       }
@@ -33,6 +35,12 @@ const tawkInitScript = `
       window.console.error = function() {
         if (arguments.length === 1 && arguments[0] === true) {
           return;
+        }
+
+        // Tawk reports its own connection problems through console.error ("[Tawk/Logger]: Error report sent").
+        // Keep them visible as warnings so they don't raise the Next.js error overlay.
+        if (typeof arguments[0] === "string" && arguments[0].indexOf("[Tawk/Logger]") === 0) {
+          return window.console.warn.apply(window.console, arguments);
         }
 
         return originalConsoleError.apply(window.console, arguments);

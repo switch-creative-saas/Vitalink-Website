@@ -31,7 +31,7 @@ export default function PrivacyPolicy() {
   const router = useRouter();
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-white">
+    <main className="relative min-h-screen overflow-x-clip bg-white">
       <Navigation />
       <LegalPageLayout
       title="Privacy Policy"
@@ -309,7 +309,7 @@ export default function PrivacyPolicy() {
         <p className="text-muted-foreground mb-4">
           For questions, concerns, or requests regarding this Privacy Policy or your personal data:
         </p>
-        <div className="bg-[#F8FAFC] border border-border rounded-lg p-6">
+        <div className="bg-surface border border-border rounded-lg p-6">
           <p className="text-muted-foreground mb-2">
             <strong>Email:</strong> privacy@vitalink.africa
           </p>

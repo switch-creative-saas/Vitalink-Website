@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Download, Printer } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { GlobeBackground } from "@/components/GlobeBackground";
+import { Printer } from "lucide-react";
+import { SplitText } from "@/components/landing/motion";
 import { SectionContainer } from "@/components/landing/section-container";
 import { cn } from "@/lib/utils";
 
@@ -55,43 +54,31 @@ export function LegalPageLayout({
     window.print();
   };
 
-  const handleExportPDF = () => {
-    window.print();
-  };
-
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-20">
-        <GlobeBackground />
-        <SectionContainer>
-          <div className="relative z-10">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground">
-            {title}
-          </h1>
-          <p className="mt-4 text-muted-foreground">
-            Last Updated: {lastUpdated}
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleExportPDF}
-              className="bg-white text-foreground hover:bg-[#F8FAFC] border-border"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Export PDF
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
+      <div className="relative overflow-hidden bg-white pb-12 pt-28 sm:pt-32 lg:pb-16 lg:pt-40">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-16 h-72 w-72 rounded-full border border-primary/10 lg:h-[26rem] lg:w-[26rem]" />
+        <SectionContainer className="relative">
+          <span className="inline-flex items-center gap-2 rounded-full bg-surface px-3 py-1.5 text-xs font-medium text-foreground/70">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+            Legal
+          </span>
+          <SplitText
+            as="h1"
+            text={title}
+            className="mt-6 text-[2.4rem] font-normal leading-[1.05] tracking-[-0.035em] text-ink sm:text-6xl lg:text-7xl"
+          />
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <span className="text-sm text-muted-foreground">Last updated {lastUpdated}</span>
+            <button
+              type="button"
               onClick={handlePrint}
-              className="bg-white text-foreground hover:bg-[#F8FAFC] border-border"
+              className="inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-brand-soft hover:text-primary print:hidden"
             >
-              <Printer className="w-4 h-4 mr-2" />
-              Print
-            </Button>
-          </div>
+              <Printer className="h-4 w-4" />
+              Print or save as PDF
+            </button>
           </div>
         </SectionContainer>
       </div>
@@ -100,10 +87,10 @@ export function LegalPageLayout({
       <SectionContainer className="py-12 lg:py-16">
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Table of Contents - Sticky on Desktop */}
-          <aside className="lg:w-72 shrink-0">
-            <nav className="lg:sticky lg:top-24">
-              <h2 className="text-sm font-semibold text-foreground mb-4">
-                Table of Contents
+          <aside className="lg:w-72 shrink-0 print:hidden">
+            <nav className="rounded-[1.5rem] bg-surface p-5 lg:sticky lg:top-24">
+              <h2 className="text-sm font-medium text-ink mb-4">
+                On this page
               </h2>
               <ul className="space-y-2">
                 {sections.map((section) => (
@@ -136,7 +123,7 @@ export function LegalPageLayout({
 
       {/* Acceptance Banner */}
       {acceptanceText && (
-        <div className="bg-[#F8FAFC] border-t border-border py-6">
+        <div className="bg-surface py-6">
           <SectionContainer>
             <p className="text-sm text-muted-foreground text-center">
               {acceptanceText}

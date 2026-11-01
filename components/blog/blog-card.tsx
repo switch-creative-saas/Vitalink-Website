@@ -35,7 +35,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             />
             <div className="absolute top-4 left-4">
               {post.category && (
-                <span className="inline-block px-3 py-1 bg-[#2563EB] text-white text-xs font-semibold rounded-full">
+                <span className="inline-block px-3 py-1 bg-primary text-white text-xs font-semibold rounded-full">
                   {post.category}
                 </span>
               )}
@@ -58,11 +58,11 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
                 </div>
               )}
             </div>
-            <h2 className={`font-bold text-foreground mb-2 line-clamp-2 ${featured ? "text-2xl" : "text-lg"}`}>
+            <h2 className={`font-normal tracking-[-0.03em] text-ink mb-2 line-clamp-2 ${featured ? "text-2xl" : "text-lg"}`}>
               {post.title}
             </h2>
             <p className="text-muted-foreground line-clamp-2 mb-4">{post.excerpt}</p>
-            <div className="flex items-center gap-2 text-[#2563EB] font-medium group-hover:gap-3 transition-all">
+            <div className="flex items-center gap-2 text-primary font-medium group-hover:gap-3 transition-all">
               <span>Read more</span>
               <ArrowRight className="w-4 h-4" />
             </div>
@@ -109,7 +109,7 @@ export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
             <li key={category.slug || category.title}>
               <Link
                 href={`/category/${category.slug || slugify(category.title)}`}
-                className="block text-sm text-muted-foreground hover:text-[#2563EB] transition-colors py-1"
+                className="block text-sm text-muted-foreground hover:text-primary transition-colors py-1"
               >
                 {category.title}
               </Link>
@@ -128,7 +128,7 @@ export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
           {popularPosts.slice(0, 5).map((post) => (
             <li key={post._id}>
               <Link href={`/blog/${post.slug}`} className="block group">
-                <h4 className="text-sm font-medium text-foreground group-hover:text-[#2563EB] transition-colors line-clamp-2">
+                <h4 className="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
                   {post.title}
                 </h4>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -154,7 +154,7 @@ export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
             <Link
               key={tag.slug || tag.name}
               href={`/tag/${tag.slug || slugify(tag.name)}`}
-              className="inline-block px-3 py-1 bg-[#F8FAFC] text-sm text-muted-foreground hover:bg-[#2563EB] hover:text-white rounded-full transition-colors"
+              className="inline-block px-3 py-1 bg-surface text-sm text-muted-foreground hover:bg-primary hover:text-white rounded-full transition-colors"
             >
               {tag.name}
             </Link>
@@ -163,7 +163,7 @@ export function Sidebar({ categories, popularPosts, tags }: SidebarProps) {
       </div>
 
       {/* Newsletter Signup */}
-      <div className="bg-gradient-to-br from-[#2563EB] to-[#7C3AED] rounded-xl p-6 text-white">
+      <div className="bg-primary rounded-xl p-6 text-white">
         <h3 className="font-semibold mb-2 flex items-center gap-2">
           <Mail className="w-5 h-5" />
           Stay Updated

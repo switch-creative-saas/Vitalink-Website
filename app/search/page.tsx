@@ -34,13 +34,13 @@ export default function SearchPage() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-white">
+    <main className="relative min-h-screen overflow-x-clip bg-white">
       <Navigation />
       {/* Search Header */}
       <section className="bg-white pt-28 pb-14 lg:pt-36 lg:pb-20">
         <SectionContainer>
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
+            <h1 className="text-4xl sm:text-5xl font-normal tracking-[-0.02em] text-ink mb-4">
               Search
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
@@ -52,7 +52,7 @@ export default function SearchPage() {
                 placeholder="Search articles..."
                 value={query}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="w-full px-6 py-4 rounded-xl bg-white border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30"
+                className="w-full px-6 py-4 rounded-xl bg-white border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
               <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             </div>

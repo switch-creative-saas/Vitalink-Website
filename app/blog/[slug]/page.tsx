@@ -43,16 +43,16 @@ const portableTextComponents = {
   },
   block: {
     h2: ({ children }: { children?: React.ReactNode }) => (
-      <h2 className="mt-10 mb-4 text-2xl font-bold text-foreground">{children}</h2>
+      <h2 className="mt-10 mb-4 text-2xl font-normal tracking-[-0.02em] text-ink">{children}</h2>
     ),
     h3: ({ children }: { children?: React.ReactNode }) => (
-      <h3 className="mt-8 mb-3 text-xl font-bold text-foreground">{children}</h3>
+      <h3 className="mt-8 mb-3 text-xl font-normal tracking-[-0.02em] text-ink">{children}</h3>
     ),
     normal: ({ children }: { children?: React.ReactNode }) => (
       <p className="mb-5 text-base leading-8 text-muted-foreground">{children}</p>
     ),
     blockquote: ({ children }: { children?: React.ReactNode }) => (
-      <blockquote className="my-8 border-l-4 border-[#2563EB] bg-[#EFF6FF] px-5 py-4 text-muted-foreground">
+      <blockquote className="my-8 border-l-4 border-primary bg-brand-soft px-5 py-4 text-muted-foreground">
         {children}
       </blockquote>
     ),
@@ -75,7 +75,7 @@ const portableTextComponents = {
     }) => (
       <a
         href={value?.href}
-        className="font-medium text-[#2563EB] underline-offset-4 hover:underline"
+        className="font-medium text-primary underline-offset-4 hover:underline"
         target={value?.href?.startsWith("http") ? "_blank" : undefined}
         rel={value?.href?.startsWith("http") ? "noopener noreferrer" : undefined}
       >
@@ -139,11 +139,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   if (!post) {
     return (
-      <main className="relative min-h-screen overflow-x-hidden bg-white">
+      <main className="relative min-h-screen overflow-x-clip bg-white">
         <Navigation />
         <SectionContainer className="flex min-h-[60vh] items-center justify-center pt-28">
           <div className="text-center">
-            <h1 className="mb-4 text-2xl font-bold text-foreground">Article Not Found</h1>
+            <h1 className="mb-4 text-2xl font-normal tracking-[-0.02em] text-ink">Article Not Found</h1>
             <Button asChild>
               <Link href="/blog">Back to Blog</Link>
             </Button>
@@ -205,7 +205,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   };
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-white">
+    <main className="relative min-h-screen overflow-x-clip bg-white">
       <Navigation />
       <script
         type="application/ld+json"
@@ -221,17 +221,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <SectionContainer>
             <div className="mx-auto max-w-4xl">
               <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                <Link href="/" className="hover:text-[#2563EB]">
+                <Link href="/" className="hover:text-primary">
                   Home
                 </Link>
                 <span>/</span>
-                <Link href="/blog" className="hover:text-[#2563EB]">
+                <Link href="/blog" className="hover:text-primary">
                   Insights
                 </Link>
                 {post.category && (
                   <>
                     <span>/</span>
-                    <Link href={`/category/${categorySlug}`} className="hover:text-[#2563EB]">
+                    <Link href={`/category/${categorySlug}`} className="hover:text-primary">
                       {post.category}
                     </Link>
                   </>
@@ -240,7 +240,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
               {post.category && (
                 <Link href={`/category/${categorySlug}`} className="inline-block">
-                  <span className="inline-flex rounded-full bg-[#EFF6FF] px-3 py-1 text-xs font-semibold text-[#2563EB]">
+                  <span className="inline-flex rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-primary">
                     {post.category}
                   </span>
                 </Link>
@@ -282,7 +282,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         <SectionContainer className="py-10">
           <div className="mx-auto max-w-4xl">
-            <div className="relative aspect-[21/9] overflow-hidden rounded-xl border border-border bg-[#F8FAFC]">
+            <div className="relative aspect-[21/9] overflow-hidden rounded-xl border border-border bg-surface">
               <Image
                 src={imageUrl}
                 alt={post.featuredImageAlt || post.title}
@@ -308,7 +308,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <aside className="space-y-4">
               <div className="rounded-xl border border-border bg-white p-5 shadow-sm">
                 <p className="mb-4 flex items-center gap-2 text-sm font-semibold text-foreground">
-                  <Share2 className="h-4 w-4 text-[#2563EB]" />
+                  <Share2 className="h-4 w-4 text-primary" />
                   Share article
                 </p>
                 <div className="flex gap-2">
@@ -335,13 +335,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </article>
 
       {relatedPosts.length > 0 && (
-        <section className="bg-[#F8FAFC] py-14 lg:py-20">
+        <section className="bg-surface py-14 lg:py-20">
           <SectionContainer>
             <div className="mb-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563EB]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
                 Related Articles
               </p>
-              <h2 className="mt-2 text-2xl font-bold text-foreground">
+              <h2 className="mt-2 text-2xl font-normal tracking-[-0.02em] text-ink">
                 Continue reading
               </h2>
             </div>

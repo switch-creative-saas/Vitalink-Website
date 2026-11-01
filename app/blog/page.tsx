@@ -7,7 +7,7 @@ import {
   slugify,
 } from "@/sanity/lib/blog";
 import { BlogCard, Sidebar } from "@/components/blog/blog-card";
-import { GlobeBackground } from "@/components/GlobeBackground";
+import { PageHero } from "@/components/landing/page-hero";
 import { NewsletterSignup } from "@/components/blog/newsletter-signup";
 import { FooterSection } from "@/components/landing/footer-section";
 import { Navigation } from "@/components/landing/navigation";
@@ -55,33 +55,23 @@ export default async function BlogPage() {
   const recentPosts = allPosts;
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-white">
+    <main className="relative min-h-screen overflow-x-clip bg-white">
       <Navigation />
 
-      <section className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-24">
-        <GlobeBackground />
-        <SectionContainer>
-          <div className="relative z-10 max-w-4xl">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#EFF6FF] text-[#2563EB] text-xs font-semibold mb-6">
-              VitaLink Insights
-            </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight">
-              VitaLink Insights
-            </h1>
-            <p className="mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-3xl">
-              Healthcare innovation, public health intelligence, digital transformation,
-              and healthcare infrastructure across Africa.
-            </p>
-            <Link
-              href="/search"
-              className="mt-8 inline-flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-3 text-sm font-medium text-foreground shadow-sm hover:border-[#2563EB]/30 hover:text-[#2563EB] transition-colors"
-            >
-              <Search className="h-4 w-4" />
-              Search insights
-            </Link>
-          </div>
-        </SectionContainer>
-      </section>
+      <PageHero
+        align="left"
+        eyebrow="VitaLink Insights"
+        title="Notes on running better care"
+        lead="Guides, product updates and perspectives on hospital operations, AI in medicine and public health in Nigeria."
+      >
+        <Link
+          href="/search"
+          className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-5 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/30 hover:text-primary"
+        >
+          <Search className="h-4 w-4" />
+          Search articles
+        </Link>
+      </PageHero>
 
       <SectionContainer className="py-14 lg:py-20">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -90,10 +80,10 @@ export default async function BlogPage() {
               <section>
                 <div className="mb-6 flex items-end justify-between gap-4">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563EB]">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
                       Featured Article
                     </p>
-                    <h2 className="mt-2 text-2xl font-bold text-foreground">
+                    <h2 className="mt-2 text-2xl font-normal tracking-[-0.02em] text-ink">
                       Editor&apos;s pick
                     </h2>
                   </div>
@@ -104,10 +94,10 @@ export default async function BlogPage() {
 
             <section>
               <div className="mb-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563EB]">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
                   Recent Articles
                 </p>
-                <h2 className="mt-2 text-2xl font-bold text-foreground">
+                <h2 className="mt-2 text-2xl font-normal tracking-[-0.02em] text-ink">
                   Latest thinking from VitaLink
                 </h2>
               </div>
@@ -126,10 +116,10 @@ export default async function BlogPage() {
 
             <section>
               <div className="mb-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563EB]">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
                   Categories
                 </p>
-                <h2 className="mt-2 text-2xl font-bold text-foreground">
+                <h2 className="mt-2 text-2xl font-normal tracking-[-0.02em] text-ink">
                   Explore by topic
                 </h2>
               </div>
@@ -138,7 +128,7 @@ export default async function BlogPage() {
                   <Link
                     key={category.slug || category.title}
                     href={`/category/${category.slug || slugify(category.title)}`}
-                    className="rounded-full border border-border bg-white px-4 py-2 text-sm font-medium text-muted-foreground hover:border-[#2563EB]/40 hover:text-[#2563EB] transition-colors"
+                    className="rounded-full border border-border bg-white px-4 py-2 text-sm font-medium text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors"
                   >
                     {category.title}
                   </Link>

@@ -1,439 +1,251 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Mail, Phone, MapPin, Clock, Calendar, Building2, Users, Globe, HeartPulse, Shield, Activity, HelpCircle, ArrowLeft } from "lucide-react";
-import { SectionContainer } from "@/components/landing/section-container";
+import { ArrowRight, Building2, CalendarDays, CheckCircle2, Clock, Globe, HelpCircle, Loader2, Mail, Shield, Users } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { trackDemoClick } from "@/lib/analytics";
+import { DEMO_URL } from "@/lib/site-links";
+import { sendContactMessage } from "@/lib/contact";
+import { SectionContainer } from "@/components/landing/section-container";
 import { Navigation } from "@/components/landing/navigation";
 import { FooterSection } from "@/components/landing/footer-section";
-import { GlobeBackground } from "@/components/GlobeBackground";
+import { PageHero, SectionHeading } from "@/components/landing/page-hero";
+import { Reveal } from "@/components/landing/reveal";
+
+const contactCards = [
+  { title: "General", email: "hello@vitalink.africa", icon: Mail },
+  { title: "Support", email: "support@vitalink.africa", icon: HelpCircle },
+  { title: "Partnerships", email: "partnerships@vitalink.africa", icon: Users },
+  { title: "Investors", email: "investors@vitalink.africa", icon: Building2 },
+  { title: "Privacy", email: "privacy@vitalink.africa", icon: Shield },
+  { title: "Careers", email: "careers@vitalink.africa", icon: Globe },
+];
+
+// Topics must match the list in the app's website-contact function.
+const subjects = [
+  "Product demo",
+  "Pricing or Enterprise plan",
+  "Technical support",
+  "Hospital or NGO partnership",
+  "Government partnership",
+  "Investor relations",
+  "Privacy or data request",
+  "Careers",
+  "Something else",
+];
+
+const faqs = [
+  {
+    q: "How does a hospital get started?",
+    a: "Sign up at app.vitalink.africa for a 14-day trial of the Growth plan. No card is needed. If you'd like a walkthrough first, book a demo and we'll show you the workspace with your own workflows in mind.",
+  },
+  {
+    q: "Can you help us move our existing records?",
+    a: "Yes. The workspace imports Excel, CSV and exports from other EMRs, and can read photos of paper registers. Our team can help with larger migrations.",
+  },
+  {
+    q: "How do VitaCards work?",
+    a: "Each NFC card is linked to a patient's record. Tapping it on any NFC phone shows the emergency profile. The full record only opens with the patient's PIN.",
+  },
+  {
+    q: "Can NGOs and governments use Sentinel?",
+    a: "Yes. Full Sentinel surveillance is part of the Enterprise plan and available as an add-on for Starter and Growth. Contact partnerships to discuss a rollout.",
+  },
+];
+
+const fieldClass =
+  "w-full rounded-2xl border border-border bg-white px-4 py-3.5 text-[15px] text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-primary focus:ring-4 focus:ring-primary/10";
 
 export default function ContactPage() {
-  const router = useRouter();
-  const [formData, setFormData] = useState({
-    fullName: "",
-    organization: "",
-    email: "",
-    phone: "",
-    country: "",
-    subject: "",
-    message: "",
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
-  };
+  const empty = { fullName: "", organization: "", email: "", phone: "", subject: "", message: "", vl_trap: "" };
+  const [form, setForm] = useState(empty);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const contactCards = [
-    {
-      title: "General",
-      email: "hello@vitalink.africa",
-      icon: Mail,
-    },
-    {
-      title: "Partnerships",
-      email: "partnerships@vitalink.africa",
-      icon: Users,
-    },
-    {
-      title: "Support",
-      email: "support@vitalink.africa",
-      icon: HelpCircle,
-    },
-    {
-      title: "Investors",
-      email: "investors@vitalink.africa",
-      icon: Building2,
-    },
-    {
-      title: "Privacy",
-      email: "privacy@vitalink.africa",
-      icon: Shield,
-    },
-    {
-      title: "Legal",
-      email: "legal@vitalink.africa",
-      icon: Activity,
-    },
-    {
-      title: "Careers",
-      email: "careers@vitalink.africa",
-      icon: Globe,
-    },
-  ];
-
-  const faqs = [
-    {
-      question: "How do I join the waitlist?",
-      answer: "You can join the waitlist by clicking the 'Join Waitlist' button on our homepage or by filling out the contact form with 'Join Waitlist' as your subject.",
-    },
-    {
-      question: "How do hospitals onboard?",
-      answer: "Hospitals can onboard by contacting our partnerships team. We'll schedule a demo, discuss your needs, and guide you through the implementation process.",
-    },
-    {
-      question: "How does VitaCard work?",
-      answer: "VitaCard is an NFC-based healthcare identity card that stores secure identifiers linked to your encrypted medical records. It enables offline access to critical health information.",
-    },
-    {
-      question: "How does VitaMind AI work?",
-      answer: "VitaMind AI provides clinical decision support to healthcare professionals. It analyzes patient data to offer insights and recommendations that must be reviewed by licensed practitioners.",
-    },
-    {
-      question: "How can NGOs use VitaLink Sentinel?",
-      answer: "NGOs can use VitaLink Sentinel to access anonymized disease surveillance data, track health interventions, and coordinate public health initiatives with government agencies.",
-    },
-    {
-      question: "How can governments partner with VitaLink?",
-      answer: "Governments can partner with VitaLink to implement national health identity systems, disease surveillance networks, and integrated healthcare platforms for public health management.",
-    },
-  ];
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("sending");
+    setError("");
+    try {
+      await sendContactMessage(form);
+      setStatus("sent");
+      setForm(empty);
+    } catch (err) {
+      setStatus("error");
+      setError(err instanceof Error ? err.message : "We could not send your message.");
+    }
+  };
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-white">
+    <main className="relative min-h-screen overflow-x-clip bg-white">
       <Navigation />
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-white pt-28 pb-16 lg:pt-36 lg:pb-24">
-        <GlobeBackground />
-        <SectionContainer>
-          <div className="relative z-10 max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-              Get In Touch
-            </h1>
-            <p className="mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-              Whether you're a patient, hospital, NGO, government agency, investor, or partner, we'd love to hear from you.
-            </p>
-          </div>
-        </SectionContainer>
-      </section>
 
-      {/* Contact Form */}
-      <section className="py-20 lg:py-28 bg-white">
-        <SectionContainer>
-          <div className="grid lg:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-3xl font-bold text-foreground mb-6">
-                Send Us a Message
-              </h2>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="fullName" className="block text-sm font-medium text-foreground mb-2">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="fullName"
-                      name="fullName"
-                      required
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="organization" className="block text-sm font-medium text-foreground mb-2">
-                      Organization
-                    </label>
-                    <input
-                      type="text"
-                      id="organization"
-                      name="organization"
-                      value={formData.organization}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                      placeholder="Your organization"
-                    />
-                  </div>
-                </div>
+      <PageHero
+        eyebrow="Contact"
+        title="Talk to the VitaLink team"
+        lead="Questions about the workspace, pricing, partnerships or support. We reply on working days, usually within one business day."
+      />
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                      placeholder="john@example.com"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                      placeholder="+234 XXX XXX XXXX"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-foreground mb-2">
-                    Country *
-                  </label>
-                  <input
-                    type="text"
-                    id="country"
-                    name="country"
-                    required
-                    value={formData.country}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                    placeholder="Nigeria"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-2">
-                    Subject *
-                  </label>
-                  <select
-                    id="subject"
-                    name="subject"
-                    required
-                    value={formData.subject}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                  >
-                    <option value="">Select an inquiry type</option>
-                    <option value="General Inquiry">General Inquiry</option>
-                    <option value="Hospital Partnership">Hospital Partnership</option>
-                    <option value="Government Partnership">Government Partnership</option>
-                    <option value="NGO Partnership">NGO Partnership</option>
-                    <option value="Investor Relations">Investor Relations</option>
-                    <option value="Media Inquiry">Media Inquiry</option>
-                    <option value="Technical Support">Technical Support</option>
-                    <option value="Careers">Careers</option>
-                    <option value="Product Demo">Product Demo</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={6}
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB] resize-none"
-                    placeholder="Tell us more about your inquiry..."
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full bg-[#2563EB] hover:bg-[#2563EB]/90 text-white rounded-xl h-12 px-8 font-medium"
+      <section className="bg-white pb-14 lg:pb-20">
+        <SectionContainer className="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:gap-12">
+          <Reveal className="rounded-[2rem] bg-surface p-5 sm:p-8 lg:p-10">
+            <h2 className="text-2xl font-normal tracking-[-0.02em] text-ink sm:text-3xl">Send us a message</h2>
+            <p className="mt-2 text-sm text-muted-foreground">We reply on working days, usually within one business day.</p>
+            {status === "sent" ? (
+              <div className="mt-8 rounded-2xl bg-white p-6 text-center" role="status">
+                <CheckCircle2 className="mx-auto h-10 w-10 text-primary" />
+                <p className="mt-4 text-lg font-medium text-ink">Message sent</p>
+                <p className="mt-1 text-sm text-muted-foreground">Thanks for getting in touch. We&apos;ll reply to your email.</p>
+                <button
+                  type="button"
+                  onClick={() => setStatus("idle")}
+                  className="mt-6 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-foreground/30"
                 >
-                  Send Message
-                </Button>
-              </form>
-            </div>
-
-            {/* Contact Cards */}
-            <div>
-              <h2 className="text-3xl font-bold text-foreground mb-6">
-                Contact Information
-              </h2>
-              <div className="grid gap-4">
-                {contactCards.map((card) => (
-                  <a
-                    key={card.title}
-                    href={`mailto:${card.email}`}
-                    className="p-4 bg-[#F8FAFC] border border-border rounded-lg hover:shadow-md transition-shadow flex items-center gap-4"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#7C3AED] flex items-center justify-center shrink-0">
-                      <card.icon className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-foreground">{card.title}</p>
-                      <p className="text-sm text-muted-foreground">{card.email}</p>
-                    </div>
-                  </a>
-                ))}
+                  Send another message
+                </button>
               </div>
-            </div>
-          </div>
-        </SectionContainer>
-      </section>
+            ) : (
+            <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+              {/* Honeypot: hidden from people, bots tend to fill it in */}
+              <input
+                type="text"
+                name="vl_trap"
+                value={form.vl_trap}
+                onChange={handleChange}
+                tabIndex={-1}
+                autoComplete="new-password"
+                aria-hidden="true"
+                className="absolute -left-[9999px] h-0 w-0 opacity-0"
+              />
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="block">
+                  <span className="mb-2 block text-sm font-medium text-foreground">Full name *</span>
+                  <input name="fullName" required value={form.fullName} onChange={handleChange} className={fieldClass} placeholder="Your name" />
+                </label>
+                <label className="block">
+                  <span className="mb-2 block text-sm font-medium text-foreground">Organisation</span>
+                  <input name="organization" value={form.organization} onChange={handleChange} className={fieldClass} placeholder="Hospital or company" />
+                </label>
+                <label className="block">
+                  <span className="mb-2 block text-sm font-medium text-foreground">Email *</span>
+                  <input type="email" name="email" required value={form.email} onChange={handleChange} className={fieldClass} placeholder="you@example.com" />
+                </label>
+                <label className="block">
+                  <span className="mb-2 block text-sm font-medium text-foreground">Phone</span>
+                  <input type="tel" name="phone" value={form.phone} onChange={handleChange} className={fieldClass} placeholder="+234" />
+                </label>
+              </div>
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-foreground">What is it about? *</span>
+                <select name="subject" required value={form.subject} onChange={handleChange} className={fieldClass}>
+                  <option value="">Choose a topic</option>
+                  {subjects.map((topic) => (
+                    <option key={topic} value={topic}>
+                      {topic}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-foreground">Message *</span>
+                <textarea name="message" required rows={6} value={form.message} onChange={handleChange} className={`${fieldClass} resize-none`} placeholder="How can we help?" />
+              </label>
+              {status === "error" && (
+                <p role="alert" className="rounded-2xl bg-[#fbe6f3] px-4 py-3 text-sm text-[#a3226f]">
+                  {error} You can also email{" "}
+                  <a href="mailto:hello@vitalink.africa" className="font-medium underline">hello@vitalink.africa</a>.
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={status === "sending"}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-white transition-colors hover:bg-brand-deep disabled:opacity-70 sm:w-auto"
+              >
+                {status === "sending" ? (
+                  <>
+                    Sending
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    Send message
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </button>
+            </form>
+            )}
+          </Reveal>
 
-      {/* Book a Demo */}
-      <section className="py-20 lg:py-28 bg-[#F8FAFC]">
-        <SectionContainer>
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Book a Demo
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Hospitals and healthcare organizations can schedule a personalized VitaLink demonstration.
-            </p>
-            <Button
-              size="lg"
-              className="bg-[#2563EB] hover:bg-[#2563EB]/90 text-white rounded-xl h-12 px-8 font-medium"
-              asChild
-            >
+          <div className="space-y-4">
+            <Reveal delay={100} className="relative overflow-hidden rounded-[2rem] bg-primary p-6 text-white sm:p-8">
+              <CalendarDays className="h-7 w-7" />
+              <h2 className="mt-6 text-2xl font-normal tracking-[-0.02em]">Book a demo</h2>
+              <p className="mt-2 text-[15px] leading-relaxed text-white/80">
+                See the workspace with a member of the team and get your questions answered live.
+              </p>
               <a
-                href="https://calendar.app.google/mpgibQjd3RzayAvx9"
+                href={DEMO_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-              >
-                Schedule Demo
-              </a>
-            </Button>
-          </div>
-        </SectionContainer>
-      </section>
-
-      {/* Office Section */}
-      <section className="py-20 lg:py-28 bg-white">
-        <SectionContainer>
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 text-center">
-              Our Office
-            </h2>
-            <div className="p-8 bg-[#F8FAFC] border border-border rounded-xl">
-              <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#7C3AED] flex items-center justify-center shrink-0">
-                  <Building2 className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
-                    Headquarters
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Abuja, Nigeria
-                  </p>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Future expansion locations coming soon across Africa.
-              </p>
-            </div>
-          </div>
-        </SectionContainer>
-      </section>
-
-      {/* Map Section */}
-      <section className="py-20 lg:py-28 bg-[#F8FAFC]">
-        <SectionContainer>
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 text-center">
-              Find Us
-            </h2>
-            <div className="aspect-video bg-[#E2E8F0] border border-border rounded-xl flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Interactive map coming soon</p>
-              </div>
-            </div>
-          </div>
-        </SectionContainer>
-      </section>
-
-      {/* Support Hours */}
-      <section className="py-20 lg:py-28 bg-white">
-        <SectionContainer>
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
-              Support Hours
-            </h2>
-            <div className="flex items-center justify-center gap-4 text-lg text-muted-foreground">
-              <Clock className="w-6 h-6" />
-              <p>Monday – Friday: 9:00 AM – 6:00 PM WAT</p>
-            </div>
-          </div>
-        </SectionContainer>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 lg:py-28 bg-[#F8FAFC]">
-        <SectionContainer>
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 text-center">
-              Frequently Asked Questions
-            </h2>
-            <div className="space-y-4">
-              {faqs.map((faq, index) => (
-                <div
-                  key={index}
-                  className="p-6 bg-white border border-border rounded-xl"
-                >
-                  <h3 className="text-lg font-semibold text-foreground mb-2">
-                    {faq.question}
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {faq.answer}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </SectionContainer>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-20 lg:py-28 bg-gradient-to-br from-[#2563EB] to-[#7C3AED]">
-        <SectionContainer>
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-              Let's Build Better Healthcare Together
-            </h2>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="bg-white text-[#2563EB] hover:bg-white/90 rounded-xl h-12 px-8 font-medium"
-                asChild
-              >
-                <a href="#waitlist">Join Waitlist</a>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-transparent border-white text-white hover:bg-white/10 rounded-xl h-12 px-8 font-medium"
                 onClick={() => trackDemoClick("contact_page")}
-                asChild
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-primary transition-colors hover:bg-sun hover:text-ink"
               >
+                Pick a time
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </Reveal>
+
+            <Reveal delay={160} className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {contactCards.map(({ title, email, icon: Icon }) => (
                 <a
-                  href="https://calendar.app.google/mpgibQjd3RzayAvx9"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  key={title}
+                  href={`mailto:${email}`}
+                  className="group flex items-center gap-3 rounded-2xl border border-border p-4 transition-colors hover:border-primary/40"
                 >
-                  Request Demo
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-primary">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-medium text-foreground">{title}</span>
+                    <span className="block truncate text-xs text-muted-foreground group-hover:text-primary">{email}</span>
+                  </span>
                 </a>
-              </Button>
-            </div>
+              ))}
+            </Reveal>
+
+            <Reveal delay={220} className="flex flex-col gap-3 rounded-2xl bg-surface p-5 text-sm text-foreground sm:flex-row sm:items-center sm:justify-between">
+              <span className="flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-primary" /> Abuja, Nigeria
+              </span>
+              <span className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-primary" /> Mon–Fri, 9am–6pm WAT
+              </span>
+            </Reveal>
           </div>
         </SectionContainer>
       </section>
+
+      <section className="bg-white py-14 lg:py-20">
+        <SectionContainer>
+          <SectionHeading title="Common questions" className="mx-auto text-center" />
+          <Reveal delay={100} className="mx-auto mt-10 max-w-3xl">
+            <Accordion type="single" collapsible className="border-t border-border">
+              {faqs.map(({ q, a }) => (
+                <AccordionItem key={q} value={q} className="border-border">
+                  <AccordionTrigger className="py-6 text-base font-normal text-ink hover:no-underline sm:text-lg">{q}</AccordionTrigger>
+                  <AccordionContent className="pb-6 pr-8 text-[15px] leading-relaxed text-muted-foreground">{a}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </Reveal>
+        </SectionContainer>
+      </section>
+
       <FooterSection />
     </main>
   );

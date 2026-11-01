@@ -5,6 +5,7 @@ type SectionContainerProps = {
   className?: string;
   id?: string;
   as?: "section" | "div" | "footer" | "nav";
+  ref?: React.Ref<HTMLDivElement>;
 };
 
 export function SectionContainer({
@@ -12,9 +13,11 @@ export function SectionContainer({
   className,
   id,
   as: Component = "div",
+  ref,
 }: SectionContainerProps) {
   return (
     <Component
+      ref={ref as React.Ref<never>}
       id={id}
       className={cn(
         "mx-auto w-full max-w-[1280px] min-w-0 px-4 sm:px-6 md:px-8",
