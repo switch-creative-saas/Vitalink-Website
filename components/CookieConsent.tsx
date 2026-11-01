@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Check, Cookie, Shield, SlidersHorizontal, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type CookieCategory = "essential" | "analytics" | "functional" | "marketing";
@@ -36,26 +35,26 @@ const allPreferences: CookiePreferences = {
 const cookieCategories: CookieCategoryConfig[] = [
   {
     id: "essential",
-    title: "Essential Cookies",
+    title: "Essential cookies",
     description:
       "Required for core site security, page navigation, consent storage, and reliable website operation. These cannot be disabled.",
     required: true,
   },
   {
     id: "analytics",
-    title: "Analytics Cookies",
+    title: "Analytics cookies",
     description:
       "Help us understand website traffic and improve VitaLink experiences using aggregated usage insights.",
   },
   {
     id: "functional",
-    title: "Functional Cookies",
+    title: "Functional cookies",
     description:
       "Remember preferences such as form choices and interface settings to make repeat visits smoother.",
   },
   {
     id: "marketing",
-    title: "Marketing Cookies",
+    title: "Marketing cookies",
     description:
       "Support relevant communications and campaign measurement. These remain disabled unless you opt in.",
   },
@@ -123,11 +122,11 @@ function PreferenceToggle({
   onChange: (checked: boolean) => void;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-white p-5 shadow-sm">
+    <div className="rounded-[1.5rem] bg-surface p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="text-base font-semibold text-foreground">{category.title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          <h3 className="text-base font-medium text-ink">{category.title}</h3>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
             {category.description}
           </p>
         </div>
@@ -135,12 +134,13 @@ function PreferenceToggle({
           type="button"
           role="switch"
           aria-checked={checked}
+          aria-label={category.title}
           disabled={category.required}
           onClick={() => onChange(!checked)}
           className={cn(
-            "relative mt-1 h-7 w-12 shrink-0 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40 focus:ring-offset-2",
-            checked ? "bg-primary" : "bg-slate-200",
-            category.required && "cursor-not-allowed opacity-80"
+            "relative mt-0.5 h-7 w-12 shrink-0 rounded-full transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/20",
+            checked ? "bg-primary" : "bg-black/15",
+            category.required && "cursor-not-allowed opacity-70"
           )}
         >
           <span
@@ -152,9 +152,9 @@ function PreferenceToggle({
         </button>
       </div>
       {category.required && (
-        <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-medium text-[#4338CA]">
+        <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-xs font-medium text-primary">
           <Shield className="h-3.5 w-3.5" />
-          Always enabled
+          Always on
         </p>
       )}
     </div>
@@ -222,72 +222,95 @@ export function CookieConsent() {
   return (
     <>
       {!hasConsent && (
-        <div className="fixed inset-x-0 bottom-0 z-[70] p-4 sm:p-6">
-          <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-[#8B5CF6]/20 bg-white/95 shadow-2xl shadow-[#4F46E5]/15 backdrop-blur-xl">
-            <div className="grid gap-6 p-6 lg:grid-cols-[1fr_auto] lg:items-end lg:p-7">
-              <div className="min-w-0">
-                <div className="mb-3 flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-white">
-                    <Cookie className="h-5 w-5" />
-                  </span>
-                  <h2 className="text-xl font-bold text-foreground">Your Privacy Matters</h2>
-                </div>
-                <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                  VitaLink uses cookies and similar technologies to improve security, enhance user experience, analyze website traffic, and remember your preferences. You can manage your cookie settings at any time.
-                </p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-                <Button className="rounded-xl bg-primary px-5 text-white hover:bg-primary/90" onClick={acceptAll}>
-                  Accept All
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-xl border-border bg-white text-foreground hover:bg-surface"
-                  onClick={rejectNonEssential}
-                >
-                  Reject Non-Essential
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="rounded-xl text-primary hover:bg-[#EEF2FF]"
-                  onClick={() => setShowModal(true)}
-                >
-                  <SlidersHorizontal className="mr-2 h-4 w-4" />
-                  Customize Preferences
-                </Button>
-              </div>
+        <div
+          role="region"
+          aria-label="Cookie consent"
+          className="fixed inset-x-3 bottom-3 z-[70] animate-in fade-in slide-in-from-bottom-6 duration-700 sm:inset-x-auto sm:bottom-6 sm:left-6 sm:w-[420px]"
+        >
+          <div className="rounded-[1.75rem] bg-white p-5 shadow-[0_24px_60px_-20px_rgba(11,16,32,0.35)] ring-1 ring-black/5 sm:p-6">
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-sun text-ink">
+                <Cookie className="h-5 w-5" />
+              </span>
+              <h2 className="text-xl font-normal tracking-[-0.02em] text-ink">We use cookies</h2>
             </div>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Essential cookies keep the site secure and working. With your permission we also use analytics and other
+              optional cookies to improve it. Change this any time from the footer.{" "}
+              <a href="/cookie-policy" className="text-primary underline-offset-4 hover:underline">
+                Cookie policy
+              </a>
+            </p>
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={acceptAll}
+                className="rounded-full bg-ink px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-primary"
+              >
+                Accept all
+              </button>
+              <button
+                type="button"
+                onClick={rejectNonEssential}
+                className="rounded-full bg-surface px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-black/10"
+              >
+                Essential only
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowModal(true)}
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 text-sm font-medium text-primary underline-offset-4 hover:underline"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              Choose which cookies
+            </button>
           </div>
         </div>
       )}
 
       {showModal && (
-        <div className="fixed inset-0 z-[80] overflow-y-auto bg-slate-950/35 px-4 py-6 backdrop-blur-sm">
-          <div className="mx-auto flex min-h-full max-w-3xl items-center">
-            <div className="w-full rounded-3xl border border-[#8B5CF6]/20 bg-white shadow-2xl shadow-[#4F46E5]/15">
-              <div className="flex items-start justify-between gap-4 border-b border-border p-6">
+        <div
+          className="fixed inset-0 z-[80] overflow-y-auto bg-ink/40 px-3 py-6 backdrop-blur-sm animate-in fade-in duration-300"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setShowModal(false);
+          }}
+        >
+          <div className="mx-auto flex min-h-full max-w-2xl items-center">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="cookie-preferences-title"
+              className="w-full rounded-[2rem] bg-white shadow-[0_30px_80px_-24px_rgba(11,16,32,0.45)] animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-500"
+            >
+              <div className="flex items-start justify-between gap-4 p-6 pb-2 sm:p-8 sm:pb-2">
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
-                    Privacy controls
-                  </p>
-                  <h2 className="mt-2 text-2xl font-bold text-foreground">
-                    Cookie Preferences
+                  <span className="inline-flex items-center gap-2 rounded-full bg-surface px-3 py-1.5 text-xs font-medium text-foreground/70">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Privacy
+                  </span>
+                  <h2
+                    id="cookie-preferences-title"
+                    className="mt-4 text-3xl font-normal tracking-[-0.03em] text-ink sm:text-4xl"
+                  >
+                    Cookie preferences
                   </h2>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    Choose which optional cookies VitaLink may use. Essential cookies remain active for security and core website functionality.
+                    Choose which optional cookies VitaLink may use. Essential cookies stay on for security and core
+                    site features.
                   </p>
                 </div>
                 <button
                   type="button"
                   aria-label="Close cookie preferences"
                   onClick={() => setShowModal(false)}
-                  className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface text-foreground/70 transition-colors hover:bg-black/10 hover:text-foreground"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="max-h-[65vh] space-y-4 overflow-y-auto p-6">
+              <div className="max-h-[60vh] space-y-2.5 overflow-y-auto px-6 py-5 sm:px-8">
                 {cookieCategories.map((category) => (
                   <PreferenceToggle
                     key={category.id}
@@ -298,25 +321,29 @@ export function CookieConsent() {
                 ))}
               </div>
 
-              <div className="flex flex-col gap-3 border-t border-border p-6 sm:flex-row sm:justify-end">
-                <Button
-                  variant="outline"
-                  className="rounded-xl bg-white"
+              <div className="flex flex-col-reverse gap-2 p-6 pt-2 sm:flex-row sm:justify-end sm:p-8 sm:pt-2">
+                <button
+                  type="button"
                   onClick={rejectNonEssential}
+                  className="rounded-full bg-surface px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-black/10"
                 >
-                  Reject All Non-Essential
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-xl bg-white"
+                  Essential only
+                </button>
+                <button
+                  type="button"
                   onClick={acceptAll}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-surface px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-black/10"
                 >
-                  <Check className="mr-2 h-4 w-4" />
-                  Accept All
-                </Button>
-                <Button className="rounded-xl bg-primary text-white hover:bg-primary/90" onClick={savePreferences}>
-                  Save Preferences
-                </Button>
+                  <Check className="h-4 w-4" />
+                  Accept all
+                </button>
+                <button
+                  type="button"
+                  onClick={savePreferences}
+                  className="rounded-full bg-primary px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-brand-deep"
+                >
+                  Save preferences
+                </button>
               </div>
             </div>
           </div>
